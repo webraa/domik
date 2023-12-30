@@ -1,9 +1,9 @@
-var cacheName = 'webapp_template-pwa';
+var cacheName = 'domik-pwa';
 var filesToCache = [
   './',
   './index.html',
-  './webapp_template.js',
-  './webapp_template_bg.wasm',
+  './domik.js',
+  './domik_bg.wasm',
 ];
 
 /* Start the service worker and cache all of the app's content */
