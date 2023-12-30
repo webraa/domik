@@ -1,4 +1,4 @@
-binname="webapp_template"
+binname="domik"
 
 help:
 	@cat Makefile
