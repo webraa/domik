@@ -1,5 +1,5 @@
 [package]
-name = "webapp_template"
+name = "domik"
 version = "0.1.0"
 license = "MIT"
 edition = "2021"
