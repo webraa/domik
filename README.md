@@ -1,4 +1,4 @@
-# webapp_template
+# DoMiK
 **egui v0.24.0** features testing
 
 ## after used as template
