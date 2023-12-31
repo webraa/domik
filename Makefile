@@ -4,7 +4,7 @@ help:
 	@cat Makefile
 
 edit:
-	@nvim ./src/example_view.rs
+	@nvim ./src/base_domik_view.rs
 edit.app:
 	@nvim ./src/root_app.rs
 edit.main:

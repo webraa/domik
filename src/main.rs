@@ -4,7 +4,7 @@ mod log_view;
 mod root_app;
 use root_app::RootApp;
 
-mod example_view;
+mod base_domik_view;
 
 mod raadbg;
 use raadbg::log;
@@ -21,7 +21,7 @@ fn main() -> Result<(), eframe::Error> {
     };
 
     eframe::run_native(
-        "egui App Template",
+        "DoMiK",
         options,
         Box::new( |cc| Box::new(RootApp::new(cc)) )
    )

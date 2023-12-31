@@ -2,7 +2,7 @@
 
 use crate::log_view::LogView;
 use crate::raadbg::log;
-use crate::example_view::ExampleView;
+use crate::base_domik_view::BaseDomikView;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -12,7 +12,7 @@ pub struct RootApp {
     #[serde(skip)]
     log_view: LogView,
     #[serde(skip)]
-    example_view: ExampleView,
+    base_domik_view: BaseDomikView,
     #[serde(skip)]
     is_wasm: bool,
 }
@@ -22,7 +22,7 @@ impl Default for RootApp {
         Self {
             example_text:"<empty>".to_owned(), 
             log_view: LogView::new(),
-            example_view: ExampleView::new(),
+            base_domik_view: BaseDomikView::new(),
             is_wasm:is_wasm(), 
         }
     }
@@ -62,8 +62,8 @@ impl eframe::App for RootApp {
             self.showBanner( ui );
         });
         
-        egui::Window::new("exampleView").show( ctx, |ui| {
-            self.example_view.updateUI( ui, &mut self.example_text );
+        egui::Window::new("base_domik_view").show( ctx, |ui| {
+            self.base_domik_view.updateUI( ui, &mut self.example_text );
         });
 
         egui::Window::new("logs").show( ctx, |ui| {
