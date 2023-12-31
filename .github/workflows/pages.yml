@@ -2,6 +2,7 @@ name: to-pages
 on:
   push:
     branches: 
+      - main
       - release
 
 permissions:
