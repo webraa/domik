@@ -1,26 +1,26 @@
-const VERS: &str = "v0.0.1";
+const VERS: &str = "v0.0.2";
 
 use crate::raadbg::log;
 
 
-pub struct ExampleView {
+pub struct BaseDomikView {
     pub title: String,
     pressed: bool,
 }
-impl Default for ExampleView {
+impl Default for BaseDomikView {
     fn default() -> Self {
         Self::new()
     }
 }
-impl ExampleView {
+impl BaseDomikView {
     pub fn new() -> Self {
         Self{
-            title: "simple example view".to_owned(),
+            title: "base exercise".to_owned(),
             pressed: false,
         }
     }
     pub fn updateUI(&mut self, ui: &mut egui::Ui, example_text: &mut String) {
-        ui.label( format!("webapp template {}", VERS) );
+        ui.label( format!("DoMiK {}", VERS) );
         ui.horizontal( |ui| {
             let btn = ui.button( "try to ??? TEXT" );
             ui.label( format!(" <{}>", self.pressed) );
