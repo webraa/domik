@@ -62,7 +62,7 @@ impl eframe::App for RootApp {
             self.showBanner( ui );
         });
         
-        egui::Window::new("base_domik_view").show( ctx, |ui| {
+        egui::Window::new(self.base_domik_view.title.clone()).show( ctx, |ui| {
             self.base_domik_view.updateUI( ui, &mut self.example_text );
         });
 

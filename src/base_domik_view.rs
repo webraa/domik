@@ -1,4 +1,4 @@
-const VERS: &str = "v0.0.2";
+const VERS: &str = "v0.0.3";
 
 use crate::raadbg::log;
 
