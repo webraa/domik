@@ -3,10 +3,10 @@
 
 ## after used as template
 ### Cargo.toml
-- [ ] change \<name> from `webapp_template` to \<appName>
+- [x] change \<name> from `webapp_template` to \<appName>
 ### ./asset/
-- [ ] **sw.js** & **manifest.jsom** => consist cach \<name>
-- [ ] **sw.js** => set actual names for **\<app>.js** and **\<app>_bg.wasm** to **Cargo.toml:name**
+- [x] **sw.js** & **manifest.jsom** => consist cach \<name>
+- [x] **sw.js** => set actual names for **\<app>.js** and **\<app>_bg.wasm** to **Cargo.toml:name**
 
 
 
