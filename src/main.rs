@@ -2,6 +2,7 @@
 
 mod log_view;
 mod root_app;
+mod midi_audio;
 use root_app::RootApp;
 
 mod base_domik_view;

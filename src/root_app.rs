@@ -3,6 +3,7 @@
 use crate::log_view::LogView;
 use crate::raadbg::log;
 use crate::base_domik_view::BaseDomikView;
+use crate::midi_audio::MidiAudio;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -11,6 +12,8 @@ pub struct RootApp {
 
     #[serde(skip)]
     log_view: LogView,
+    #[serde(skip)]
+    midi_audio: MidiAudio,
     #[serde(skip)]
     base_domik_view: BaseDomikView,
     #[serde(skip)]
@@ -22,6 +25,7 @@ impl Default for RootApp {
         Self {
             example_text:"<empty>".to_owned(), 
             log_view: LogView::new(),
+            midi_audio: MidiAudio::new(),
             base_domik_view: BaseDomikView::new(),
             is_wasm:is_wasm(), 
         }

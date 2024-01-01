@@ -3,7 +3,9 @@ binname="domik"
 help:
 	@cat Makefile
 
-edit:
+edit.audio:
+	@nvim ./src/midi_audio/mod.rs
+edit.domik:
 	@nvim ./src/base_domik_view.rs
 edit.app:
 	@nvim ./src/root_app.rs

@@ -10,7 +10,7 @@ pub mod log {
     pub fn create(name: &str){
         super::add_log_line( format!( "+[{name}]") );
     }
-    pub fn drop(name: &str){
+    pub fn on_drop(name: &str){
         super::add_log_line( format!( "-[{name}]") );
     }
     pub fn error(name: &str, error: &str){
