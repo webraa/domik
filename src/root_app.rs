@@ -67,7 +67,7 @@ impl eframe::App for RootApp {
         });
         
         egui::Window::new(self.base_domik_view.title.clone()).show( ctx, |ui| {
-            self.base_domik_view.updateUI( ui, &mut self.example_text );
+            self.base_domik_view.updateUI( ui, &mut self.midi_audio );
         });
 
         egui::Window::new("logs").show( ctx, |ui| {

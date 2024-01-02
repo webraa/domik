@@ -2,6 +2,7 @@ const VERS: &str = "v0.0.3";
 
 use crate::raadbg::log;
 
+use crate::midi_audio::MidiAudio;
 
 pub struct BaseDomikView {
     pub title: String,
@@ -19,18 +20,20 @@ impl BaseDomikView {
             pressed: false,
         }
     }
-    pub fn updateUI(&mut self, ui: &mut egui::Ui, example_text: &mut String) {
+    pub fn updateUI(&mut self, ui: &mut egui::Ui, midi_audio: &mut MidiAudio) {
         ui.label( format!("DoMiK {}", VERS) );
+        ui.separator();
+        ui.label( format!("device status: [active = {}]", midi_audio.is_active()) );
         ui.horizontal( |ui| {
-            let btn = ui.button( "try to ??? TEXT" );
-            ui.label( format!(" <{}>", self.pressed) );
-            if btn.clicked(){
-                log::simple("clicked with PRESSURE!!!");
-                self.pressed = true;
+            let btn = ui.button("start");
+            if btn.clicked() {
+                let _res = midi_audio.start();
+            }
+            let btnStop = ui.button("stop");
+            if btnStop.clicked() {
+                midi_audio.stop();
             }
         });
-        ui.text_edit_singleline(example_text);
         ui.separator();
-        ui.label( format!("just edited: [{}]", example_text) );
     }
 }
