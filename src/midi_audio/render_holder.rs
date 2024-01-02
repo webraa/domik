@@ -8,8 +8,11 @@ pub trait SoundRender: MidiReceiver + Sync + Send {
     fn get_as_midi_receiver(&mut self) -> &mut dyn MidiReceiver;
 }
 
+//  //  //  //  //  //  //  //
+//      CORE
+//  //  //  //  //  //  //  //
 pub(crate) struct RenderHolder {
-    test_seq: MidiSequence,
+    //test_seq: MidiSequence,
     pub(crate) tick_time: f32,
     pub(crate) sound_render: Option< Arc<Mutex<dyn SoundRender>> >,
 }
@@ -27,7 +30,7 @@ impl RenderHolder {
         seq.push( 1., &MidiMessage::NoteOff(1,92,80) );
         seq.push( 1., &MidiMessage::NoteOff(1,92,80) );
         let res = Self{ 
-            test_seq: seq,
+            //test_seq: seq,
             tick_time: 0.,
             sound_render: None
         };
@@ -49,11 +52,11 @@ impl RenderHolder {
                 let mut locked_sound_render = sound_render.lock()
                     .expect("FATAL: can't lock SoundRender!");
                 let midi_recevier: &mut dyn MidiReceiver = locked_sound_render.get_as_midi_receiver();
-                self.test_seq.send_next_sequence( self.tick_time, midi_recevier );
+                //self.test_seq.send_next_sequence( self.tick_time, midi_recevier );
                 locked_sound_render.render(left, right);
-                if self.test_seq.is_finished() {
-                    self.test_seq.restart();
-                }
+                //if self.test_seq.is_finished() {
+                //    self.test_seq.restart();
+                //}
             }
         }
     }

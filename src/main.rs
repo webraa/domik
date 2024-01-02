@@ -4,6 +4,7 @@ mod log_view;
 mod root_app;
 mod midi_audio;
 mod midi_lib;
+//mod synths;
 use root_app::RootApp;
 
 mod base_domik_view;

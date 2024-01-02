@@ -15,7 +15,6 @@ pub use render_holder::SoundRender as SoundRender;
 //  //  //  //  //  //  //  //
 //      CORE
 //  //  //  //  //  //  //  //
-
 pub struct MidiAudio {
     params: AudioDeviceParameters,
     device: Option< Box< dyn BaseAudioOutputDevice> >,
@@ -36,11 +35,13 @@ impl MidiAudio {
 
 impl Drop for MidiAudio {
     fn drop(&mut self) {
+        if self.is_active() {
+            self.stop();
+        }
 
         log::on_drop("MidiAudio");
     }
 }
-
 
 //  //  //  //  //  //  //  //
 //  pub interface
@@ -71,11 +72,9 @@ impl MidiAudio {
 
 }
 
-
 //  //  //  //  //  //  //  //
 //  internal interface
 //  //  //  //  //  //  //  //
-
 impl MidiAudio {
     fn run_device_loop(&mut self) -> Result< (), Box<dyn Error>> {
         let params = self.params.get_output_device_parameters();
@@ -87,6 +86,7 @@ impl MidiAudio {
             let mut left :Vec<f32> = vec![ 0_f32; self.params.block_size ];
             let mut right:Vec<f32> = vec![ 0_f32; self.params.block_size ];
             move |data: &mut [f32]| {
+                log::tick();
                 let mut render_holder_lock = render_holder.lock()
                     .expect("panic on locking render_holder_lock");
                 for chunk in data.chunks_mut(block_chunk) {
@@ -117,11 +117,9 @@ impl MidiAudio {
     }
 }
 
-
 //  //  //  //  //  //  //  //
 //          TESTS
 //  //  //  //  //  //  //  //
-
 #[cfg(test)]
 mod test {
     use super::*;
