@@ -3,51 +3,49 @@ use std::sync::{Arc,Mutex};
 use tinyaudio::prelude::{BaseAudioOutputDevice,run_output_device};
 
 use crate::raadbg::log;
-//use crate::midi_lib::MidiMessage;
-
-mod audio_device_parameters;
-use audio_device_parameters::AudioDeviceParameters;
+use crate::midi_lib::MidiMessage;
 
 mod render_holder;
 use render_holder::RenderHolder;
 pub use render_holder::SoundRender as SoundRender;
+
+mod audio_device_parameters;
+use audio_device_parameters::AudioDeviceParameters;
+//  //  //  //  //  //  //  //  //
+
 
 //  //  //  //  //  //  //  //
 //      CORE
 //  //  //  //  //  //  //  //
 pub struct MidiAudio {
     params: AudioDeviceParameters,
-    device: Option< Box< dyn BaseAudioOutputDevice> >,
+    device: Option< Box<dyn BaseAudioOutputDevice> >,
     render_holder: Arc<Mutex<RenderHolder>>,
 }
 
 impl MidiAudio {
-    pub fn new() -> Self {
-        let res = Self {
+    pub fn new( ) -> Self {
+        log::create("MidiAudio");
+        Self{ 
             params: Default::default(),
             device: None,
             render_holder: RenderHolder::new_arc_mutex(),
-        };
-        log::create("MidiAudio");
-        return res;
+        }
     }
 }
-
 impl Drop for MidiAudio {
     fn drop(&mut self) {
         if self.is_active() {
             self.stop();
         }
-
         log::on_drop("MidiAudio");
     }
 }
 
 //  //  //  //  //  //  //  //
-//  pub interface
+//      pub MAIN
 //  //  //  //  //  //  //  //
 impl MidiAudio {
-    //
     pub fn start(&mut self) -> Result< (), Box<dyn Error> > {
         if self.is_active() {
             self.stop();
@@ -68,12 +66,47 @@ impl MidiAudio {
             _ => true
         }
     }
-
-
 }
 
 //  //  //  //  //  //  //  //
-//  internal interface
+//      pub others
+//  //  //  //  //  //  //  //
+impl MidiAudio {
+    pub fn install_synth(&mut self, new_synth: Option<Arc<Mutex<dyn SoundRender>>>) {
+        let mut holder_lock = self.render_holder.lock()
+            .expect("can't lock hoder_lock");
+        holder_lock.sound_render = new_synth;
+    }
+    pub fn send_to_synth(&self, midi_msg: &MidiMessage) {
+        let mut holder_lock = self.render_holder.lock()
+            .expect("can't lock hoder_lock");
+        match &holder_lock.sound_render {
+            None => {
+            },
+            Some(sound_render) => {
+                let mut sound_render_lock = sound_render.lock()
+                    .expect("panic on locking Some(sound_render)");
+                let midi = midi_msg.to_midi_general();
+                sound_render_lock.process_midi_command( midi.channel, 
+                                                        midi.command, 
+                                                        midi.data1, 
+                                                        midi.data2 );
+          }
+        }
+    }
+    pub fn load_sequence(&mut self) {
+        let errmsg = format!("LOAD_SEQUENCE!!!!!!!!!!1111111111....");
+        log::error("MidiAudio", &errmsg);
+    }
+
+    pub fn get_sample_rate(&self) -> usize {
+        self.params.sample_rate
+    }
+}
+
+
+//  //  //  //  //  //  //  //
+//      PRIVATE interface
 //  //  //  //  //  //  //  //
 impl MidiAudio {
     fn run_device_loop(&mut self) -> Result< (), Box<dyn Error>> {
@@ -86,7 +119,6 @@ impl MidiAudio {
             let mut left :Vec<f32> = vec![ 0_f32; self.params.block_size ];
             let mut right:Vec<f32> = vec![ 0_f32; self.params.block_size ];
             move |data: &mut [f32]| {
-                log::tick();
                 let mut render_holder_lock = render_holder.lock()
                     .expect("panic on locking render_holder_lock");
                 for chunk in data.chunks_mut(block_chunk) {
@@ -116,6 +148,7 @@ impl MidiAudio {
         holder_lock.tick_time = self.params.get_tick_time();
     }
 }
+
 
 //  //  //  //  //  //  //  //
 //          TESTS

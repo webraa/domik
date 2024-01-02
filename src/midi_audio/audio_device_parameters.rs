@@ -29,6 +29,7 @@ impl AudioDeviceParameters {
         return res;
     }
 }
+
 impl Default for AudioDeviceParameters {
     fn default() -> Self {
         Self::new()

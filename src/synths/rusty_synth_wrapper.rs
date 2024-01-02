@@ -13,7 +13,7 @@ pub struct RustySynthWrapper{
 impl Drop for RustySynthWrapper {
     fn drop(&mut self) {
         self.reset();
-        log::drop("RustySynthWrapper");
+        log::on_drop("RustySynthWrapper");
     }
 }
 impl RustySynthWrapper {

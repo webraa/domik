@@ -16,7 +16,7 @@ pub struct SimpleSynth{
 impl Drop for SimpleSynth {
     fn drop(&mut self) {
         self.reset();
-        log::drop("SimpleSynth");
+        log::on_drop("SimpleSynth");
     }
 }
 impl SimpleSynth {
