@@ -2,13 +2,16 @@ use tinyaudio::prelude::OutputDeviceParameters;
 
 use crate::raadbg::log;
 
-pub struct AudioDeviceParameters {
+//  //  //  //  //  //  //  //
+//      CORE
+//  //  //  //  //  //  //  //
+pub struct AudioCoreParameters {
     pub sample_rate: usize,
     pub block_size: usize,
     pub blocks_count: usize,
 }
 
-impl AudioDeviceParameters {
+impl AudioCoreParameters {
     pub fn new() -> Self {
         Self {
             sample_rate: 44100,
@@ -16,6 +19,18 @@ impl AudioDeviceParameters {
             blocks_count: 8
         }
     }
+}
+impl Default for AudioCoreParameters {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+
+//  //  //  //  //  //  //  //
+//      MAIN interface
+//  //  //  //  //  //  //  //
+impl AudioCoreParameters {
     pub fn get_output_device_parameters(&self) -> OutputDeviceParameters {
         OutputDeviceParameters{
             sample_rate: self.sample_rate,
@@ -30,8 +45,3 @@ impl AudioDeviceParameters {
     }
 }
 
-impl Default for AudioDeviceParameters {
-    fn default() -> Self {
-        Self::new()
-    }
-}

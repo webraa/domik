@@ -1,6 +1,9 @@
 use super::{MidiMessage,MidiReceiver};
 
 
+//  //  //  //  //  //  //  //
+//      CORE
+//  //  //  //  //  //  //  //
 pub struct MidiSequence {
     current_index: usize,
     elapsed_time: f32,
@@ -16,7 +19,12 @@ impl MidiSequence {
             list: Vec::new()
         }
     }
+}
 
+//  //  //  //  //  //  //  //
+//      interface
+//  //  //  //  //  //  //  //
+impl MidiSequence {
     #[allow(dead_code)]
     pub fn push(&mut self, delay: f32, msg: &MidiMessage) {
         let len = self.list.len();
@@ -64,6 +72,9 @@ impl MidiSequence {
 }
 
 
+//  //  //  //  //  //  //  //
+//      CORE
+//  //  //  //  //  //  //  //
 struct TimedMidiMessage {
     time: f32,
     midi_msg: MidiMessage,
@@ -82,9 +93,9 @@ impl TimedMidiMessage {
 
 
 //  //  //  //  //  //  //  //
+//      TESTS
 //  //  //  //  //  //  //  //
-//  //  //  //  //  //  //  //
-//  //  //  //  //  //  //  //
+
 #[cfg(test)]
 mod test{
     use super::MidiSequence;

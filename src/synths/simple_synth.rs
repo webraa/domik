@@ -1,24 +1,23 @@
 use crate::raadbg::log;
 
-use super::super::midi_audio::SoundRender;
+use super::super::audio_core::AudioRender;
+
 use super::super::midi_lib::MidiReceiver;
 
 const PI2: f32 = 2. * std::f32::consts::PI;
 const VELO_PAR: f32 = 2.;
 //  //  //  //  //  //  //
 
+//  //  //  //  //  //  //  //
+//      CORE
+//  //  //  //  //  //  //  //
 pub struct SimpleSynth{
     sample_rate: f32,
     counter: f32,
     frequency: f32,
     amplitude: f32,
 }
-impl Drop for SimpleSynth {
-    fn drop(&mut self) {
-        self.reset();
-        log::on_drop("SimpleSynth");
-    }
-}
+
 impl SimpleSynth {
     pub fn new( sample_rate: &usize ) -> Self {
         log::create("SimpleSynth");
@@ -30,12 +29,20 @@ impl SimpleSynth {
         }
     }
 }
+impl Drop for SimpleSynth {
+    fn drop(&mut self) {
+        self.reset();
+        log::on_drop("SimpleSynth");
+    }
+}
 
-//
-//
-impl SoundRender for SimpleSynth {
+//  //  //  //  //  //  //  //
+//      RENDER interface
+//  //  //  //  //  //  //  //
+impl AudioRender for SimpleSynth {
     fn render(&mut self, left: &mut [f32], right: &mut [f32]) {
         //log::tick();
+
         let mult = self.frequency * PI2 / self.sample_rate;
         for (i, sample) in left.iter_mut().enumerate() {
             let ampl = self.amplitude*(self.counter * mult ).sin();
@@ -44,14 +51,11 @@ impl SoundRender for SimpleSynth {
             self.counter += 1.;
         }
     }
-    fn get_as_midi_receiver(&mut self) -> &mut dyn MidiReceiver {
-        self
-    }
 }
 
-
-//
-//
+//  //  //  //  //  //  //  //
+//      MIDI interface
+//  //  //  //  //  //  //  //
 impl MidiReceiver for SimpleSynth {
     fn reset(&mut self) {
         log::info("SimpleSynth", "reset");
@@ -68,8 +72,9 @@ impl MidiReceiver for SimpleSynth {
     }
 }
 
-//
-//
+//  //  //  //  //  //  //  //
+//      synthezitor
+//  //  //  //  //  //  //  //
 impl SimpleSynth {
     pub fn note_on(&mut self, _channel: i32, key: i32, velocity: i32) {
         log::info("SimpleSynth", "note ON");

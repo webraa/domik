@@ -3,7 +3,9 @@
 use crate::log_view::LogView;
 use crate::raadbg::log;
 use crate::base_domik_view::BaseDomikView;
-use crate::midi_audio::MidiAudio;
+
+use crate::test_view::TestView;
+
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -12,12 +14,11 @@ pub struct RootApp {
 
     #[serde(skip)]
     log_view: LogView,
-    #[serde(skip)]
-    midi_audio: MidiAudio,
+
     #[serde(skip)]
     base_domik_view: BaseDomikView,
     #[serde(skip)]
-    is_wasm: bool,
+    test_view: TestView,
 }
 
 impl Default for RootApp {
@@ -25,22 +26,12 @@ impl Default for RootApp {
         Self {
             example_text:"<empty>".to_owned(), 
             log_view: LogView::new(),
-            midi_audio: MidiAudio::new(),
             base_domik_view: BaseDomikView::new(),
-            is_wasm:is_wasm(), 
+            test_view: TestView::new(),
         }
     }
 }
 
-
-#[ cfg(not(target_arch = "wasm32")) ]
-fn is_wasm() -> bool  {
-    false
-}
-#[ cfg(target_arch = "wasm32") ]
-fn is_wasm() -> bool  {
-    true
-}
 
 impl RootApp {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
@@ -67,7 +58,10 @@ impl eframe::App for RootApp {
         });
         
         egui::Window::new(self.base_domik_view.title.clone()).show( ctx, |ui| {
-            self.base_domik_view.updateUI( ui, &mut self.midi_audio );
+            self.base_domik_view.updateUI( ui );
+        });
+        egui::Window::new(self.test_view.title.clone()).show( ctx, |ui| {
+            self.test_view.updateUI( ui );
         });
 
         egui::Window::new("logs").show( ctx, |ui| {

@@ -4,7 +4,9 @@ help:
 	@cat Makefile
 
 edit.audio:
-	@nvim ./src/midi_audio/mod.rs
+	@nvim ./src/audio_wrapper/mod.rs
+edit.view:
+	@nvim ./src/test_view.rs
 edit.domik:
 	@nvim ./src/base_domik_view.rs
 edit.app:

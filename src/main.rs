@@ -2,12 +2,16 @@
 
 mod log_view;
 mod root_app;
-mod midi_audio;
+
+mod audio_core;
+mod synth_wrapper;
+
 mod midi_lib;
 mod synths;
 use root_app::RootApp;
 
 mod base_domik_view;
+mod test_view;
 
 mod raadbg;
 use raadbg::log;
