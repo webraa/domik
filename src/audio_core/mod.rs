@@ -1,5 +1,6 @@
 use std::error::Error;
 use std::sync::{Arc,Mutex};
+
 use tinyaudio::OutputDeviceParameters;
 use tinyaudio::prelude::{BaseAudioOutputDevice,run_output_device};
 
@@ -11,6 +12,7 @@ use render_holder::RenderHolder;
 pub use render_holder::AudioRender;
 mod audio_core_parameters;
 use audio_core_parameters::AudioCoreParameters;
+
 //  //  //  //  //  //  //  //
 //      CORE
 //  //  //  //  //  //  //  //
@@ -67,23 +69,26 @@ impl AudioCore {
     pub fn get_sample_rate(&self) -> usize {
         self.params.sample_rate
     }
+    pub fn get_time_increment(&self) -> f32 {
+        self.params.get_tick_time()
+    }
     
     pub fn install_render(&mut self, new_render: Option<Arc<Mutex<dyn AudioRender>>>) {
-        let mut holder_lock = self.render_holder.lock()
-            .expect("can't lock hoder_lock");
-        holder_lock.sound_render = new_render;
+        let mut locked_holder = self.render_holder.lock()
+            .expect("can't lock RenderHolder");
+        locked_holder.audio_render = new_render;
     }
 }
 
 //  //  //  //  //  //  //  //
-//      PRIVATE interface lvl0
+//      PRIVATE lvl0
 //  //  //  //  //  //  //  //
 impl AudioCore {
 
     fn refresh_tick_time(&self) {
-        let mut holder_lock = self.render_holder.lock()
+        let mut locked_holder = self.render_holder.lock()
             .expect("panic on lockin holder_lock");
-        holder_lock.tick_time = self.params.get_tick_time();
+//        locked_holder.tick_time = self.params.get_tick_time();
     }
 
     fn activate_device_loop(&mut self) -> Result< (), Box<dyn Error>> {
@@ -110,7 +115,7 @@ impl AudioCore {
 }
 
 //  //  //  //  //  //  //  //
-//      PRIVATE interface lvl1
+//      PRIVATE lvl1
 //  //  //  //  //  //  //  //
 fn invoke_runOutputDevice( params: OutputDeviceParameters,
                            render_holder_clone: Arc<Mutex<RenderHolder>>,
@@ -122,10 +127,10 @@ fn invoke_runOutputDevice( params: OutputDeviceParameters,
             let mut right:Vec<f32> = vec![ 0_f32; block_size ];
             //
             move |data: &mut [f32]| {
-                let mut render_holder_lock = render_holder_clone.lock()
+                let mut locked_holder = render_holder_clone.lock()
                     .expect("panic on locking render_holder_lock");
                 for chunk in data.chunks_mut(block_chunk) {
-                    render_holder_lock.render( &mut left, &mut right );
+                    locked_holder.render( &mut left, &mut right );
                     for (i, l_sample) in left.iter().enumerate() {
                         chunk[i*2    ] = *l_sample;
                         chunk[i*2 + 1] =  right[i];

@@ -23,6 +23,7 @@ pub(crate) enum SynthVariant {
 //  //  //  //  //  //  //  //
 impl SynthVariant {
     pub(crate) fn send_to_synth(&mut self, midi_msg: &MidiMessage) {
+        let midi = midi_msg.to_midi_general();
         match &self {
             SynthVariant::Silent => {
                 return
@@ -30,7 +31,6 @@ impl SynthVariant {
             SynthVariant::Simple( simsyn ) => {
                 let mut locked_receiver = simsyn.lock()
                     .expect("panick on locking SynthVariant::Simple( simsyn )");
-                let midi = midi_msg.to_midi_general();
                 locked_receiver.process_midi_command( midi.channel, 
                                                       midi.command, 
                                                       midi.data1, 
@@ -39,7 +39,6 @@ impl SynthVariant {
             SynthVariant::Rusty( ryssyn ) => {
                 let mut locked_receiver = ryssyn.lock()
                     .expect("panick on locking SynthVariant::Rusty( ryssyn )");
-                let midi = midi_msg.to_midi_general();
                 locked_receiver.process_midi_command( midi.channel, 
                                                       midi.command, 
                                                       midi.data1, 

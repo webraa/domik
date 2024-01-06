@@ -5,35 +5,39 @@ use crate::raadbg::log;
 
 use crate::audio_core::AudioCore;
 
+use crate::midi_sequencer::{MidiSequencer,MidiSynth};
 
 use crate::synths::simple_synth::SimpleSynth;
 use crate::synths::rusty_synth_wrapper::RustySynthWrapper;
 use crate::midi_lib::{MidiMessage};
 
-//  //  //  //  //  //  //  //
-mod synth_variant;
-use synth_variant::SynthVariant;
 
 //  //  //  //  //  //  //  //
 //      CORE
 //  //  //  //  //  //  //  //
 pub struct SynthWrapper {
-    audio_wrapper: AudioCore,
-    synth_variant: SynthVariant,
+    audio_core: AudioCore,
+    sequencer: Arc<Mutex<MidiSequencer>>,
 }
 
 impl SynthWrapper {
     pub fn new( ) -> Self {
         log::create("SynthWrapper");
-        Self{ 
-            audio_wrapper: AudioCore::new(),
-            synth_variant: SynthVariant::Silent,
-        }
+        let audio = AudioCore::new();
+        let sequencer = MidiSequencer::new(audio.get_time_increment());
+        let sequencer_wrapper = Arc::new(Mutex::new( sequencer ));
+
+        let mut res = Self{ 
+            audio_core: audio,
+            sequencer: sequencer_wrapper.clone(),
+        };
+        res.audio_core.install_render(Some( sequencer_wrapper ));
+        return res;
     }
 }
 impl Drop for SynthWrapper {
     fn drop(&mut self) {
-        self.audio_wrapper.stop();
+        self.audio_core.stop();
         log::on_drop("SynthWrapper");
     }
 }
@@ -44,30 +48,28 @@ impl Drop for SynthWrapper {
 impl SynthWrapper {
     pub fn apply_config(&mut self, cfg_str: &str ) {
         log::simple( format!("CFG: {}", cfg_str).as_str() );
-        let sample_rate = self.audio_wrapper.get_sample_rate();
+        let sample_rate = self.audio_core.get_sample_rate();
+        let mut locked_sequencer = self.sequencer.lock()
+            .expect("FATAL: can't lock MidiSequencer!");
         match cfg_str {
             "" => {
-                self.audio_wrapper.install_render( None );
-                self.synth_variant = SynthVariant::Silent;
+                locked_sequencer.install_synth( None );
             },
             "SimpleSynth" => {
                 let simsyn = SimpleSynth::new( &sample_rate );
                 let arcmut_wrapper = Arc::new(Mutex::new( simsyn ));
-                self.audio_wrapper.install_render( Some(arcmut_wrapper.clone()) );
-                self.synth_variant = SynthVariant::Simple(arcmut_wrapper);
+                locked_sequencer.install_synth( Some(arcmut_wrapper.clone()) );
             },
             "RustySynt - Strings" => {
                 if let Ok(ryssyn) = RustySynthWrapper::new( &sample_rate, false ) {
                     let arcmut_wrapper = Arc::new(Mutex::new( ryssyn ));
-                    self.audio_wrapper.install_render( Some(arcmut_wrapper.clone()) );
-                    self.synth_variant = SynthVariant::Rusty(arcmut_wrapper);
+                    locked_sequencer.install_synth( Some(arcmut_wrapper.clone()) );
                 }
             },
             "RustySynt - Piano" => {
                 if let Ok(ryssyn) = RustySynthWrapper::new( &sample_rate, true ) {
                     let arcmut_wrapper = Arc::new(Mutex::new( ryssyn ));
-                    self.audio_wrapper.install_render( Some(arcmut_wrapper.clone()) );
-                    self.synth_variant = SynthVariant::Rusty(arcmut_wrapper);
+                    locked_sequencer.install_synth( Some(arcmut_wrapper.clone()) );
                 }
             },
             _  => {
@@ -83,13 +85,13 @@ impl SynthWrapper {
 //  //  //  //  //  //  //  //
 impl SynthWrapper {
     pub fn start(&mut self) -> Result< (), Box<dyn Error> > {
-        self.audio_wrapper.start()
+        self.audio_core.start()
     }
     pub fn stop(&mut self) {
-        self.audio_wrapper.stop();
+        self.audio_core.stop();
     }
     pub fn is_active(&self) -> bool {
-        self.audio_wrapper.is_active()
+        self.audio_core.is_active()
     }
 }
 
@@ -98,7 +100,9 @@ impl SynthWrapper {
 //  //  //  //  //  //  //  //
 impl SynthWrapper {
     pub fn send_to_synth(&mut self, midi_msg: &MidiMessage) {
-        self.synth_variant.send_to_synth( midi_msg );
+        let mut locked_sequencer = self.sequencer.lock()
+            .expect("FATAL: can't lock MidiSequencer!");
+        locked_sequencer.send_to_synth( midi_msg );
     }
 
 }

@@ -1,8 +1,10 @@
 use crate::raadbg::log;
 
-use super::super::audio_core::AudioRender;
+use crate::audio_core::AudioRender;
+use crate::midi_lib::MidiReceiver;
 
-use super::super::midi_lib::MidiReceiver;
+
+use super::MidiSynth;
 
 const PI2: f32 = 2. * std::f32::consts::PI;
 const VELO_PAR: f32 = 2.;
@@ -96,6 +98,11 @@ impl SimpleSynth {
     }
 }
 
+impl MidiSynth for SimpleSynth {
+    fn get_as_midi_receiver(&mut self) -> &mut dyn MidiReceiver {
+        self
+    }
+}
 
 
 

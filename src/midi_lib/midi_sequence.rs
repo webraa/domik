@@ -46,8 +46,8 @@ impl MidiSequence {
     }
 
     #[allow(dead_code)]
-    pub fn send_next_sequence(&mut self, tick_time: f32, receiver: &mut dyn MidiReceiver) {
-        self.elapsed_time += tick_time;
+    pub fn send_next_sequence(&mut self, time_increment: f32, receiver: &mut dyn MidiReceiver) {
+        self.elapsed_time += time_increment;
         for (i, tm_msg) in self.list.iter().enumerate() {
             if i < self.current_index {
                 continue;

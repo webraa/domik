@@ -7,6 +7,7 @@ mod audio_core;
 mod synth_wrapper;
 
 mod midi_lib;
+mod midi_sequencer;
 mod synths;
 use root_app::RootApp;
 

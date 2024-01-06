@@ -3,10 +3,11 @@ use rustysynth::*;
 
 use crate::raadbg::log;
 
-use super::super::audio_core::AudioRender;
+use crate::audio_core::AudioRender;
 
-use super::super::midi_lib::MidiReceiver;
+use crate::midi_lib::MidiReceiver;
 //  //  //  //  //  //  //
+use super::MidiSynth;
 
 
 //  //  //  //  //  //  //  //
@@ -78,6 +79,11 @@ impl MidiReceiver for RustySynthWrapper {
     }
 }
 
+impl MidiSynth for RustySynthWrapper {
+    fn get_as_midi_receiver(&mut self) -> &mut dyn MidiReceiver {
+        self
+    }
+}
 
 //  //  //  //  //  //  //  //
 //      Err

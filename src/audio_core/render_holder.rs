@@ -1,4 +1,5 @@
 use std::sync::{Arc,Mutex};
+
 use crate::raadbg::log;
 
 
@@ -10,8 +11,8 @@ pub trait AudioRender: Sync + Send {
 //      CORE
 //  //  //  //  //  //  //  //
 pub(crate) struct RenderHolder {
-    pub(crate) tick_time: f32,
-    pub(crate) sound_render: Option< Arc<Mutex<dyn AudioRender>> >,
+    //pub(crate) time_increment: f32,
+    pub(crate) audio_render: Option< Arc<Mutex<dyn AudioRender>> >,
 }
 
 impl RenderHolder {
@@ -21,8 +22,7 @@ impl RenderHolder {
     pub fn new() -> Self {
         log::create("RenderHolder");
         Self{ 
-            tick_time: 0.,
-            sound_render: None
+            audio_render: None
         }
     }
 }
@@ -32,34 +32,31 @@ impl Drop for RenderHolder {
     }
 }
 
-
-
 //  //  //  //  //  //  //  //
 //      MAIN interface
 //  //  //  //  //  //  //  //
 impl RenderHolder {
-    pub fn render(&mut self, left: &mut [f32], right: &mut [f32]) {
-        match &self.sound_render {
+    pub(crate) fn render(&mut self, left: &mut [f32], right: &mut [f32]) {
+        match &self.audio_render {
             None => {
-                // write silence
-                for sample in left {
-                    *sample = 0_f32;
-                }
-                for sample in right {
-                    *sample = 0_f32;
-                }
+                fill_silence(left);
+                fill_silence(right);
             },
-            Some(sound_render) => {
-                let mut sound_render_lock = sound_render.lock()
-                    .expect("FATAL: can't lock SoundRender!");
-                //let midi_recevier: &mut dyn MidiReceiver = sound_render_lock.get_as_midi_receiver();
-                //self.test_seq.send_next_sequence( self.tick_time, midi_recevier );
-                sound_render_lock.render(left, right);
-                //if self.test_seq.is_finished() {
-                //    self.test_seq.restart();
-                //}
+            Some(render) => {
+                let mut locked_render = render.lock()
+                    .expect("FATAL: can't lock AudioRender!");
+                locked_render.render(left, right);
             }
         }
     }
+}
+
+//  //  //  //  //  //  //  //
+//      UTIL
+//  //  //  //  //  //  //  //
+fn fill_silence(buf: &mut [f32]) {
+    for sample in buf {
+        *sample = 0_f32;
+   }
 }
 
