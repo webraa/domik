@@ -3,12 +3,11 @@
 mod log_view;
 mod root_app;
 
-mod audio_core;
-mod synth_wrapper;
+mod player_to_audio;
 
-mod midi_lib;
-mod midi_sequencer;
-mod synths;
+//mod midi_lib;
+//mod midi_sequencer;
+//mod synths;
 use root_app::RootApp;
 
 mod base_domik_view;

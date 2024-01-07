@@ -3,9 +3,9 @@ use rustysynth::*;
 
 use crate::raadbg::log;
 
-use crate::audio_core::AudioRender;
+use super::super::audio_core::AudioRender;
 
-use crate::midi_lib::MidiReceiver;
+use super::super::midi_lib::MidiReceiver;
 //  //  //  //  //  //  //
 use super::MidiSynth;
 

@@ -5,4 +5,4 @@ pub mod midi_receiver;
 pub use midi_receiver::MidiReceiver as MidiReceiver;
 
 pub mod midi_sequence;
-pub use midi_sequence::*;
+pub use midi_sequence::MidiSequence;

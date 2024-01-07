@@ -39,6 +39,7 @@ impl MidiSequence {
         let new_value = TimedMidiMessage::new(prev_time+delay, msg.clone() );
         self.list.push( new_value );
     }
+
     #[allow(dead_code)]
     pub fn restart(&mut self) {
         self.current_index = 0;

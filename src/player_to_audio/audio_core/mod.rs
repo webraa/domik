@@ -9,7 +9,7 @@ use crate::raadbg::log;
 //  //  //  //  //  //  //  //
 mod render_holder;
 use render_holder::RenderHolder;
-pub use render_holder::AudioRender;
+pub use render_holder::AudioRender as AudioRender;
 mod audio_core_parameters;
 use audio_core_parameters::AudioCoreParameters;
 
@@ -52,7 +52,7 @@ impl AudioCore {
         }else{
             log::info("AudioCore", "starting");
         }
-        self.refresh_tick_time();
+        //self.refresh_tick_time();
         self.activate_device_loop()
     }
     pub fn stop(&mut self) {
@@ -85,11 +85,11 @@ impl AudioCore {
 //  //  //  //  //  //  //  //
 impl AudioCore {
 
-    fn refresh_tick_time(&self) {
-        let mut locked_holder = self.render_holder.lock()
-            .expect("panic on lockin holder_lock");
+//    fn refresh_tick_time(&self) {
+//        let mut locked_holder = self.render_holder.lock()
+//            .expect("panic on lockin holder_lock");
 //        locked_holder.tick_time = self.params.get_tick_time();
-    }
+//    }
 
     fn activate_device_loop(&mut self) -> Result< (), Box<dyn Error>> {
         // prepare parameters

@@ -3,11 +3,10 @@ use std::sync::{Arc,Mutex};
 
 use crate::raadbg::log;
 
-use crate::audio_core::AudioRender;
+use super::audio_core::AudioRender;
 
-use crate::midi_lib::{MidiReceiver,MidiSequence,MidiMessage};
-
-pub use crate::synths::MidiSynth as MidiSynth;
+use super::midi_lib::{MidiReceiver,MidiSequence,MidiMessage};
+pub use super::synths::MidiSynth as MidiSynth;
 
 
 //  //  //  //  //  //  //  //
@@ -15,31 +14,24 @@ pub use crate::synths::MidiSynth as MidiSynth;
 //  //  //  //  //  //  //  //
 pub struct MidiSequencer{
     time_increment: f32,
-    seqtest: MidiSequence,
+    sequence: MidiSequence,
+    is_auto_repeat: bool,
     midi_synth: Option<Arc<Mutex<dyn MidiSynth>>>,
 }
 
 impl MidiSequencer {
     pub fn new( time_increment: f32 ) -> Self {
         log::create("MidiSequencer");
-        let mut seq = MidiSequence::new();
-        seq.push( 0.0, &MidiMessage::NoteOn( 1,90,80) );
-        seq.push( 0.5, &MidiMessage::NoteOff(1,90,80) );
-        seq.push( 0., &MidiMessage::NoteOn( 1,91,80) );
-        seq.push( 0.5, &MidiMessage::NoteOff(1,91,80) );
-        seq.push( 0., &MidiMessage::NoteOn( 1,92,80) );
-        seq.push( 1., &MidiMessage::NoteOff(1,92,80) );
-        seq.push( 1., &MidiMessage::NoteOff(1,92,80) );
         Self{
             time_increment: time_increment,
-            seqtest: seq,//MidiSequence::new(),
+            sequence: MidiSequence::new(),
+            is_auto_repeat: false,
             midi_synth: None,
         }
     }
 }
 impl Drop for MidiSequencer {
     fn drop(&mut self) {
-        self.reset();
         log::on_drop("MidiSequencer");
     }
 }
@@ -48,6 +40,10 @@ impl Drop for MidiSequencer {
 //      interface
 //  //  //  //  //  //  //  //
 impl MidiSequencer {
+    pub fn set_midi_sequence(&mut self, seq: MidiSequence, is_auto_repeat: bool) {
+        self.is_auto_repeat = is_auto_repeat;
+        self.sequence = seq;
+    }
     pub fn install_synth(&mut self, new_synth: Option<Arc<Mutex<dyn MidiSynth>>>) {
         self.midi_synth = new_synth;
     }
@@ -62,6 +58,9 @@ impl MidiSequencer {
                                                 midi.data1, 
                                                 midi.data2 );
         }
+    }
+    pub fn get_state(&self) -> bool {
+        self.sequence.is_finished()
     }
 }
 //  //  //  //  //  //  //  //
@@ -80,30 +79,18 @@ impl AudioRender for MidiSequencer {
                 let mut locked_synth = synth.lock()
                     .expect("FATAL: can't lock MidiSynth!");
                 let midi_recevier: &mut dyn MidiReceiver = locked_synth.get_as_midi_receiver();
-                self.seqtest.send_next_sequence( self.time_increment, midi_recevier );
+                self.sequence.send_next_sequence( self.time_increment, midi_recevier );
                 locked_synth.render(left, right);
-                if self.seqtest.is_finished() {
-                    self.seqtest.restart();
+                if self.sequence.is_finished() {
+                    if self.is_auto_repeat {
+                        self.sequence.restart();
+                    }
                 }
             }
         }
     }
 }
 
-//  //  //  //  //  //  //  //
-//      MIDI interface
-//  //  //  //  //  //  //  //
-impl MidiReceiver for MidiSequencer {
-    fn reset(&mut self) {
-        log::info("MidiSequencer", "reset");
-    }
-    fn process_midi_command(&mut self, 
-                            channel: i32, command: i32, 
-                            data1: i32, data2: i32) 
-    {
-        log::info("MidiSequencer", "W: unknown midi command");
-    }
-}
 
 //  //  //  //  //  //  //  //
 //      UTIL
