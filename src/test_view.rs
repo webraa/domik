@@ -1,7 +1,9 @@
 
 //use crate::raadbg::log;
 
-use crate::player_to_audio::{PlayerToAudio};
+use egui::Color32;
+
+use crate::player_to_audio::{PlayerToAudio,PlayerState};
 
 use crate::player_to_audio::{MidiMessage,MidiSequence};
 
@@ -9,6 +11,7 @@ use crate::player_to_audio::{MidiMessage,MidiSequence};
 
 
 pub struct TestView {
+    needsRepaint: bool,
     pub title: String,
     player: PlayerToAudio,
 }
@@ -20,20 +23,41 @@ impl Default for TestView {
 impl TestView {
     pub fn new() -> Self {
         Self{
+            needsRepaint: false,
             title: "testing view".to_owned(),
             player: PlayerToAudio::new(),
         }
     }
     pub fn updateUI(&mut self, ui: &mut egui::Ui) {
-        ui.label( format!("device status: [active = {}]", self.player.get_state()) );
-        ui.horizontal( |ui| {
-            let btn = ui.button("start");
+        if let PlayerState::Realtime = self.player.get_state() {
+            self.needsRepaint = true;
+        }
+        ui.scope(|ui|{
+            let btn_txt;
+            let clr;
+            match self.player.get_state() {
+                PlayerState::Inactive => {
+                    btn_txt = "[-]";
+                    clr = Color32::DARK_BLUE;
+                },
+                PlayerState::Running => {
+                    btn_txt = "[+]";
+                    clr = Color32::DARK_GREEN;
+                },
+                PlayerState::Realtime => {
+                    btn_txt = "[#]";
+                    clr = Color32::GREEN;
+                },
+            };
+            ui.style_mut().visuals.widgets.inactive.weak_bg_fill = clr;
+            ui.style_mut().visuals.widgets.hovered.weak_bg_fill = clr;
+            let btn = ui.button(btn_txt);
             if btn.clicked() {
-                self.player.execute_command( "start", "" );
-            }
-            let btnStop = ui.button("stop");
-            if btnStop.clicked() {
-                self.player.execute_command( "stop", "" );
+                if let PlayerState::Inactive = self.player.get_state() {
+                    self.player.execute_command( "start", "" );
+                }else{
+                    self.player.execute_command( "stop", "" );
+                }
             }
         });
         ui.separator();
@@ -115,6 +139,11 @@ impl TestView {
                 self.player.send_midi_message( & midi );
             }
         });
+
+        if self.needsRepaint {
+            self.needsRepaint = false;
+            ui.ctx().request_repaint();
+        }
     }
 }
 

@@ -15,6 +15,27 @@ mod uni_source_variant;
 use uni_source_variant::{UniSourceVariant,UniSourceVariant::*};
 
 
+pub enum PlayerState {
+    Inactive,
+    Running,
+    Realtime,
+}
+impl PlayerState {
+    pub fn as_string(&self) -> String {
+        match &self {
+            Inactive => {
+                "inactive".to_string()
+            },
+            Running => {
+                "Running".to_string()
+            },
+            Realtime => {
+                "REALTIME".to_string()
+            },
+        }
+    }
+}
+pub use PlayerState::*;
 
 //  //  //  //  //  //  //  //
 //      CORE
@@ -75,33 +96,24 @@ impl PlayerToAudio {
             
         }
     }
-    pub fn get_state(&self) -> String {
+    pub fn get_state(&self) -> PlayerState {
         if self.audio_core.is_active() {
             match &self.uni_source {
-                Silence => {
-                    "silence".to_string()
-                },
-                Audio(wrapped_audio_render) => {
-                    "--audio--".to_string()
-                },
-                Simple(simsyn) => {
-                    "simple".to_string()
-                },
-                Rusty(ryssyn) => {
-                    "rusty".to_string()
-                },
                 Sequencer(sequencer) => {
                     let locked_sequencer = sequencer.lock()
                         .expect("FATAL locking Sequencer");
                     if locked_sequencer.get_state() {
-                        "Seq.Fin".to_string()
+                        Running
                     }else{
-                        "Seq.ACT".to_string()
+                        Realtime
                     }
                 },
+                _ => {
+                    Running
+                }
         }
         }else{
-            "<S>".to_string()
+            Inactive
         }
     }
 }
