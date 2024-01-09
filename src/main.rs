@@ -5,11 +5,9 @@ mod root_app;
 
 mod player_to_audio;
 
-//mod midi_lib;
-//mod midi_sequencer;
-//mod synths;
 use root_app::RootApp;
 
+mod domik_ui_elements;
 mod base_domik_view;
 mod test_view;
 

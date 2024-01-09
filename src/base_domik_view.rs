@@ -1,4 +1,4 @@
-const VERS: &str = "v0.0.3";
+const VERS: &str = "v0.1.0";
 
 
 //use crate::raadbg::log;
@@ -6,6 +6,7 @@ const VERS: &str = "v0.0.3";
 //use crate::synth_wrapper::SynthWrapper;
 //use crate::midi_lib::MidiMessage;
 
+use crate::domik_ui_elements::*;
 
 
 
@@ -28,6 +29,9 @@ impl BaseDomikView {
     pub fn updateUI(&mut self, ui: &mut egui::Ui) {
         ui.label( format!("DoMiK {}", VERS) );
         ui.separator();
+        for lvl in -7..=5 {
+            ui.add(dom_lvl( -lvl ));
+        }
     }
 }
 
