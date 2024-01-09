@@ -8,7 +8,7 @@
 //  //  //  //  //  //  //  //
 //      Basic test element
 //  //  //  //  //  //  //  //
-pub fn dom_lvl(lvl: i8) -> impl egui::Widget + 'static {
+pub fn dom_lvl(lvl: i8) -> impl egui::Widget {
     move |ui: &mut egui::Ui| dom_lvl_responder(ui, lvl)
 }
 
