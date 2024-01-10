@@ -80,6 +80,10 @@ impl RootApp {
                 ui.hyperlink_to("eframe",
                     "https://github.com/emilk/egui/tree/master/crates/eframe",
                 );
+                ui.label(". Under hood: ");
+                ui.hyperlink_to("tinyaudio", "https://github.com/mrDIMAS/tinyaudio");
+                ui.label(" and ");
+                ui.hyperlink_to("rustysynth","https://github.com/sinshu/rustysynth");
                 ui.label(".");
             });
     }
