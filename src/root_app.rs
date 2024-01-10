@@ -34,7 +34,7 @@ impl Default for RootApp {
 
 
 impl RootApp {
-    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    pub fn new(cc: &eframe::CreationContext) -> Self {
         if let Some(storage) = cc.storage{
             log::simple("trying to load..");
             return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
