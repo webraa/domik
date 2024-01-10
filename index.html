@@ -111,8 +111,6 @@
 </head>
 
 <body>
-    <p>.. .. ..</p>
-    <button type="btn">ClickMe</button>
     <!-- The WASM code will resize the canvas dynamically -->
     <!-- the id is hardcoded in main.rs . so, make sure both match. -->
     <canvas id="raa_canvas_id"></canvas>
@@ -123,7 +121,7 @@
         // We disable caching during development so that we always view the latest version.
         if ('serviceWorker' in navigator && window.location.hash !== "#dev") {
             window.addEventListener('load', function () {
-                navigator.serviceWorker.register('sw.js');
+		    navigator.serviceWorker.register('sw.js');
             });
         }
     </script>
