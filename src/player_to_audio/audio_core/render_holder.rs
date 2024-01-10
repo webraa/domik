@@ -37,6 +37,8 @@ impl Drop for RenderHolder {
 //  //  //  //  //  //  //  //
 impl RenderHolder {
     pub(crate) fn render(&mut self, left: &mut [f32], right: &mut [f32]) {
+        log::tick();
+
         match &self.audio_render {
             None => {
                 fill_silence(left);
