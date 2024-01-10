@@ -15,8 +15,8 @@ impl AudioCoreParameters {
     pub fn new() -> Self {
         Self {
             sample_rate: 44100,
-            block_size: 441 * 16,
-            blocks_count: 8
+            block_size: 441 * 50,
+            blocks_count: 8 / 8
         }
     }
 }

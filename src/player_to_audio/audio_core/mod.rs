@@ -52,7 +52,6 @@ impl AudioCore {
         }else{
             log::info("AudioCore", "starting");
         }
-        //self.refresh_tick_time();
         self.activate_device_loop()
     }
     pub fn stop(&mut self) {
