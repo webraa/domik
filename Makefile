@@ -1,51 +1,32 @@
-binname="domik"
 
 help:
 	@cat Makefile
 
-edit.audio:
-	@nvim ./src/audio_wrapper/mod.rs
-edit.view:
-	@nvim ./src/test_view.rs
-edit.domik:
-	@nvim ./src/base_domik_view.rs
-edit.app:
-	@nvim ./src/root_app.rs
-edit.main:
-	@nvim ./src/main.rs
+serve: bindgen.wasm http.server
 
-all: release trunk.release savetogit
-trunk.release:
-	@trunk build --release
-serve:
-	@trunk serve
+http.server:
+	@cd dist && python3 -m http.server 3333
+bindgen.wasm: clean.dist release.wasm
+	@wasm-bindgen --out-dir dist --target web target/wasm32-unknown-unknown/release/domik.wasm
+	@cp -v assets/** dist/
+clean.dist:
+	@rm -rf dist
+	@mkdir -p dist
 
-run: release size
-	@./target/release/$(binname)
+run: release
+	@cargo run --release
+
 release:
 	@cargo rustc --release -- -C prefer-dynamic
+release.wasm:
+	@cargo build --release --target wasm32-unknown-unknown
 test:
 	@cargo test
 
-size:
-	@ls -lAh ./target/release/$(binname)
-path:
-	export LD_LIBRARY_PATH='/home/configurator/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib'
+#path:
+#	export LD_LIBRARY_PATH='/home/configurator/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib'
 
 
-to.release:
-	@git checkout release
-to.dev:
-	@git checkout dev
-merge.dev:
-	@git merge dev
-
-status:
-	@git status
-pull:
-	@git pull
-
-savetogit: git.pushall
 git.pushall: git.commitall
 	@git push
 git.commitall: git.addall
@@ -53,6 +34,5 @@ git.commitall: git.addall
 git.addall:
 	@git add .
 
-clean:
+clean: clean.dist
 	@cargo clean
-	@trunk clean

@@ -1,17 +1,33 @@
 #![allow(non_snake_case)]
-  
-use crate::log;
-use crate::sound_check::make_sound;
+
+use crate::log_view::LogView;
+use crate::raadbg::log;
+use crate::base_domik_view::BaseDomikView;
+
+use crate::test_view::TestView;
 
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
 pub struct RootApp {
+    pub example_text: String,
+
+    #[serde(skip)]
+    log_view: LogView,
+
+    #[serde(skip)]
+    base_domik_view: BaseDomikView,
+    #[serde(skip)]
+    test_view: TestView,
 }
 
 impl Default for RootApp {
     fn default() -> Self {
         Self {
+            example_text:"<empty>".to_owned(), 
+            log_view: LogView::new(),
+            base_domik_view: BaseDomikView::new(),
+            test_view: TestView::new(),
         }
     }
 }
@@ -20,7 +36,7 @@ impl Default for RootApp {
 impl RootApp {
     pub fn new(cc: &eframe::CreationContext) -> Self {
         if let Some(storage) = cc.storage{
-            log("trying to load..");
+            log::simple("trying to load..");
             return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
         }
         Default::default()
@@ -30,9 +46,9 @@ impl RootApp {
 
 impl eframe::App for RootApp {
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
-        log("saving..");
+        log::simple("saving..");
         eframe::set_value(storage, eframe::APP_KEY, self);
-        log("..saved");
+        log::simple("..saved");
     }
 
     fn update( &mut self, ctx: &egui::Context, _frame: &mut eframe::Frame ) {
@@ -41,12 +57,15 @@ impl eframe::App for RootApp {
             self.showBanner( ui );
         });
         
+        egui::Window::new(self.base_domik_view.title.clone()).show( ctx, |ui| {
+            self.base_domik_view.updateUI( ui );
+        });
+        egui::Window::new(self.test_view.title.clone()).show( ctx, |ui| {
+            self.test_view.updateUI( ui );
+        });
+
         egui::Window::new("logs").show( ctx, |ui| {
-            let b = ui.button("do it");
-            if b.clicked() {
-                log("clazz");
-                make_sound();
-            }
+            self.log_view.updateUI( ui );
         });
     }
 }

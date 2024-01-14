@@ -1,26 +1,11 @@
+
 <!DOCTYPE html>
-<html>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<!-- Disable zooming: -->
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-
+<html lang="en">
 <head>
-    <!-- change this to your project name -->
-    <title>DoMiK WebApp</title>
-
-    <!-- config for our rust wasm binary. go to https://trunkrs.dev/assets/#rust for more customization -->
-    <link data-trunk rel="rust" data-wasm-opt="2" />
-    <!-- this is the base url relative to which other urls will be constructed. trunk will insert this from the public-url option -->
-    <base data-trunk-public-url />
-
-    <link data-trunk rel="copy-file" href="assets/sw.js" />
-    <link data-trunk rel="copy-file" href="assets/manifest.json" />
-
-    <link rel="manifest" href="manifest.json">
-
-
-
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<title>DoMiK WebApp</title>
 
     <style>
         html {
@@ -111,22 +96,11 @@
 </head>
 
 <body>
-    <!-- The WASM code will resize the canvas dynamically -->
-    <!-- the id is hardcoded in main.rs . so, make sure both match. -->
-    <canvas id="raa_canvas_id"></canvas>
-
-    <!--Register Service Worker. this will cache the wasm / js scripts for offline use (for PWA functionality). -->
-    <!-- Force refresh (Ctrl + F5) to load the latest files instead of cached files  -->
-    <script>
-        // We disable caching during development so that we always view the latest version.
-        if ('serviceWorker' in navigator && window.location.hash !== "#dev") {
-            window.addEventListener('load', function () {
-		    navigator.serviceWorker.register('sw.js');
-            });
-        }
-    </script>
+	<!--button id="el-starter"><br/>Enable<br/>AudioSystem<br/>...</button-->
+	<!--button id="el-another"><br/>Another<br/>Button<br/>...</button-->
+	<script type="module" src="starter.js"></script>
+	<canvas id="egui_canvas_id"></canvas>
 </body>
-
 </html>
 
 <!-- Powered by egui: https://github.com/emilk/egui/ -->
