@@ -4,7 +4,6 @@ version = "0.1.0"
 license = "MIT"
 edition = "2021"
 
-
 [dependencies]
 egui = "0.24.0"
 eframe = { version = "0.24.0", default-features = false, features = [

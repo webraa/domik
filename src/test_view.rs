@@ -29,6 +29,11 @@ impl TestView {
         }
     }
     pub fn updateUI(&mut self, ui: &mut egui::Ui) {
+        let b = ui.button("rrr");
+            if b.clicked() {
+                self.player = PlayerToAudio::new();
+            }
+        ui.separator();
         if let PlayerState::Realtime = self.player.get_state() {
             self.needsRepaint = true;
         }

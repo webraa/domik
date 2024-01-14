@@ -40,6 +40,8 @@ to.dev:
 merge.dev:
 	@git merge dev
 
+status:
+	@git status
 pull:
 	@git pull
 
