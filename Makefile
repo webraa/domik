@@ -26,6 +26,8 @@ test:
 #path:
 #	export LD_LIBRARY_PATH='/home/configurator/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib'
 
+configure:
+	@cargo install -f wasm-bindgen-cli
 
 git.pushall: git.commitall
 	@git push
