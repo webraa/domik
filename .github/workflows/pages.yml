@@ -23,7 +23,9 @@ jobs:
     - name: Rust Cache # cache the rust build artefacts
       uses: Swatinem/rust-cache@v1
     - name: Build
-      run : make bindgen.wasm
+      run : |
+        make -v
+        make bindgen.wasm
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4
       with:
