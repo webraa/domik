@@ -1,6 +1,5 @@
 const VERS: &str = "v0.1.0";
 
-//use crate::raadbg::log;
 
 use crate::domik_ui_elements::*;
 

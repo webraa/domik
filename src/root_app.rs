@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 
+use raalog::*;
 use crate::log_view::LogView;
-use crate::raadbg::log;
 use crate::base_domik_view::BaseDomikView;
 
 use crate::test_view::TestView;
@@ -36,7 +36,7 @@ impl Default for RootApp {
 impl RootApp {
     pub fn new(cc: &eframe::CreationContext) -> Self {
         if let Some(storage) = cc.storage{
-            log::simple("trying to load..");
+            log::info("trying to load..");
             return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
         }
         Default::default()
@@ -46,9 +46,9 @@ impl RootApp {
 
 impl eframe::App for RootApp {
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
-        log::simple("saving..");
+        log::info("saving..");
         eframe::set_value(storage, eframe::APP_KEY, self);
-        log::simple("..saved");
+        log::info("..saved");
     }
 
     fn update( &mut self, ctx: &egui::Context, _frame: &mut eframe::Frame ) {

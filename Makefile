@@ -16,6 +16,8 @@ clean.dist:
 run: release
 	@cargo run --release
 
+all: test release release.wasm
+
 release:
 	@cargo rustc --release -- -C prefer-dynamic
 release.wasm:
