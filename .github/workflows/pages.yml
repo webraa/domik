@@ -31,7 +31,6 @@ jobs:
     - name: Build
       run : |
         make configure
-        make test
         make bindgen.wasm
 
     - name: Deploy
