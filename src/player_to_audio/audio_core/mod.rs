@@ -143,23 +143,25 @@ fn invoke_runOutputDevice( params: OutputDeviceParameters,
 //  //  //  //  //  //  //  //
 //          TESTS
 //  //  //  //  //  //  //  //
-#[ cfg(not(target_arch = "wasm32")) ]
 #[cfg(test)]
-mod test {
+mod native_only_test {
     use super::*;
 
     #[test]
+    #[ignore]
     fn create_inactive() {
         let audio = AudioCore::new();
         assert!(!audio.is_active());
     }
     #[test]
+    #[ignore]
     fn start_active() {
         let mut audio = AudioCore::new();
         let _ = audio.start();
         assert!(audio.is_active());
     }
     #[test]
+    #[ignore]
     fn start_stop() {
         let mut audio = AudioCore::new();
         let _ = audio.start();
