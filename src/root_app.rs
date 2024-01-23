@@ -1,8 +1,11 @@
 #![allow(non_snake_case)]
 
+use raalog::*;
 use crate::log_view::LogView;
-use crate::raadbg::log;
 use crate::base_domik_view::BaseDomikView;
+
+use crate::test_view::TestView;
+
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -11,10 +14,11 @@ pub struct RootApp {
 
     #[serde(skip)]
     log_view: LogView,
+
     #[serde(skip)]
     base_domik_view: BaseDomikView,
     #[serde(skip)]
-    is_wasm: bool,
+    test_view: TestView,
 }
 
 impl Default for RootApp {
@@ -23,25 +27,16 @@ impl Default for RootApp {
             example_text:"<empty>".to_owned(), 
             log_view: LogView::new(),
             base_domik_view: BaseDomikView::new(),
-            is_wasm:is_wasm(), 
+            test_view: TestView::new(),
         }
     }
 }
 
 
-#[ cfg(not(target_arch = "wasm32")) ]
-fn is_wasm() -> bool  {
-    false
-}
-#[ cfg(target_arch = "wasm32") ]
-fn is_wasm() -> bool  {
-    true
-}
-
 impl RootApp {
-    pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    pub fn new(cc: &eframe::CreationContext) -> Self {
         if let Some(storage) = cc.storage{
-            log::simple("trying to load..");
+            log::info("trying to load..");
             return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
         }
         Default::default()
@@ -51,9 +46,9 @@ impl RootApp {
 
 impl eframe::App for RootApp {
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
-        log::simple("saving..");
+        log::info("saving..");
         eframe::set_value(storage, eframe::APP_KEY, self);
-        log::simple("..saved");
+        log::info("..saved");
     }
 
     fn update( &mut self, ctx: &egui::Context, _frame: &mut eframe::Frame ) {
@@ -63,7 +58,10 @@ impl eframe::App for RootApp {
         });
         
         egui::Window::new(self.base_domik_view.title.clone()).show( ctx, |ui| {
-            self.base_domik_view.updateUI( ui, &mut self.example_text );
+            self.base_domik_view.updateUI( ui );
+        });
+        egui::Window::new(self.test_view.title.clone()).show( ctx, |ui| {
+            self.test_view.updateUI( ui );
         });
 
         egui::Window::new("logs").show( ctx, |ui| {
@@ -82,6 +80,10 @@ impl RootApp {
                 ui.hyperlink_to("eframe",
                     "https://github.com/emilk/egui/tree/master/crates/eframe",
                 );
+                ui.label(". Under hood: ");
+                ui.hyperlink_to("tinyaudio", "https://github.com/mrDIMAS/tinyaudio");
+                ui.label(" and ");
+                ui.hyperlink_to("rustysynth","https://github.com/sinshu/rustysynth");
                 ui.label(".");
             });
     }

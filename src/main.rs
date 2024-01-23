@@ -2,16 +2,20 @@
 
 mod log_view;
 mod root_app;
+
+mod player_to_audio;
+
 use root_app::RootApp;
 
+mod domik_ui_elements;
 mod base_domik_view;
+mod test_view;
 
-mod raadbg;
-use raadbg::log;
+use raalog::*;
 
 #[ cfg(not(target_arch = "wasm32")) ]
 fn main() -> Result<(), eframe::Error> {
-    log::simple("[BINARY]: MAIN has beed entered..");
+    log::info("MAIN has beed entered..");
 
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
@@ -30,7 +34,7 @@ fn main() -> Result<(), eframe::Error> {
 
 #[ cfg(target_arch = "wasm32") ]
 fn main() {
-    log::simple("[WASM]: MAIN has beed entered..");
+    log::info("MAIN has beed entered..");
 
     console_error_panic_hook::set_once();
 
@@ -41,7 +45,7 @@ fn main() {
     wasm_bindgen_futures::spawn_local(async {
         eframe::WebRunner::new()
             .start(
-                "raa_canvas_id",
+                "egui_canvas_id",
                 options,
                 Box::new( |cc| Box::new(RootApp::new(cc)) ),
             )

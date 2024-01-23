@@ -12,3 +12,4 @@
 
 ---
 > ### based on [emilk/eframe_template](https://github.com/emilk/eframe_template)
+> ### critical componets are: [tinyaudio](https://github.com/mrDIMAS/tinyaudio) and [rustysynth](https://github.com/sinshu/rustysynth)
