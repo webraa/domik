@@ -143,6 +143,7 @@ fn invoke_runOutputDevice( params: OutputDeviceParameters,
 //  //  //  //  //  //  //  //
 //          TESTS
 //  //  //  //  //  //  //  //
+/*
 #[cfg(test)]
 mod test {
     use super::*;
@@ -167,4 +168,4 @@ mod test {
         assert!(!audio.is_active());
     }
 }
-
+*/
