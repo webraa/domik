@@ -1,6 +1,6 @@
 //use std::sync::{Arc,Mutex};
 
-use crate::raadbg::log;
+use raalog::*;
 
 mod audio_core;
 use audio_core::{AudioCore};
@@ -47,7 +47,7 @@ pub struct PlayerToAudio {
 
 impl PlayerToAudio {
     pub fn new( ) -> Self {
-        log::create("PlayerToAudio");
+        log::creating("PlayerToAudio");
         Self{
             audio_core: AudioCore::new(),
             uni_source: UniSourceVariant::Silence,
@@ -56,7 +56,7 @@ impl PlayerToAudio {
 }
 impl Drop for PlayerToAudio {
     fn drop(&mut self) {
-        log::on_drop("PlayerToAudio");
+        log::droping("PlayerToAudio");
     }
 }
 
@@ -76,7 +76,7 @@ impl PlayerToAudio {
                 self.invoke_set_uni_source( cmd_opt );
             },
             _ => {
-                log::error("execute command:", "unknown")
+                log::error("execute command: unknown")
             },
         }
     }
@@ -91,7 +91,7 @@ impl PlayerToAudio {
                 locked_sequencer.set_midi_sequence(seq, is_auto_repeat );
             },
             _ => {
-                log::error("set_sequence:", "NOT a Sequencer.Ignoring")
+                log::error("set_sequence: NOT a Sequencer.Ignoring")
             },
             
         }
@@ -123,7 +123,7 @@ impl PlayerToAudio {
 //  //  //  //  //  //  //  //
 impl PlayerToAudio {
     fn invoke_set_uni_source(&mut self, config: &str) {
-        log::simple( format!("--> <{config}>").as_str() );
+        log::info( &format!("--> <{config}>") );
         let sample_rate = self.audio_core.get_sample_rate();
         let time_increment = self.audio_core.get_time_increment();
         self.uni_source = UniSourceVariant::new(config, &sample_rate, time_increment);

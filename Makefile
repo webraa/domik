@@ -20,15 +20,14 @@ trunk.release:
 serve:
 	@trunk serve
 
-run: release size
-	@./target/release/$(binname)
+run: release 
+	#@./target/release/$(binname)
+	@cargo run --release
 release:
 	@cargo rustc --release -- -C prefer-dynamic
 test:
 	@cargo test
 
-size:
-	@ls -lAh ./target/release/$(binname)
 path:
 	export LD_LIBRARY_PATH='/home/configurator/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib'
 

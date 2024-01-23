@@ -1,4 +1,4 @@
-use crate::raadbg::log;
+use raalog::*;
 
 pub struct LogView {
 }
@@ -16,7 +16,7 @@ impl LogView {
     }
 
     pub fn updateUI(&mut self, ui: &mut egui::Ui ) {
-            ui.label( log::get() );
+            ui.label( log::history() );
     }
 }
 

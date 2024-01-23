@@ -5,6 +5,10 @@ license = "MIT"
 edition = "2021"
 
 [dependencies]
+#raalog = { path="../../develop/raalog/" }
+#raalog = { git = "https://github.com/AlexanderARodin/raalog.git", branch="dev" }
+raalog = { git = "https://github.com/AlexanderARodin/raalog.git", tag="v0.2.0" }
+
 egui = "0.24.0"
 eframe = { version = "0.24.0", default-features = false, features = [
 	"default_fonts",

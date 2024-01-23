@@ -1,6 +1,6 @@
 use std::sync::{Arc,Mutex};
 
-use crate::raadbg::log;
+use raalog::*;
 
 
 use super::audio_core::AudioRender;
@@ -59,7 +59,7 @@ impl UniSourceVariant {
                 return Sequencer( sequencer_wrapper );
             },
             _ => {
-                log::error("invoke_set_uni_source", "unknow config");
+                log::error("invoke_set_uni_source: unknow config");
             }
         }
         Silence
@@ -98,7 +98,7 @@ impl UniSourceVariant {
                 locked_sequencer.send_to_synth(midi_msg);
             },
             _ => {
-                log::simple("outstanding");
+                log::info("outstanding");
             }
         }
     }

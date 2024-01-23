@@ -1,4 +1,4 @@
-use crate::raadbg::log;
+use raalog::*;
 
 use super::super::audio_core::AudioRender;
 use super::super::midi_lib::MidiReceiver;
@@ -22,7 +22,7 @@ pub struct SimpleSynth{
 
 impl SimpleSynth {
     pub fn new( sample_rate: &usize ) -> Self {
-        log::create("SimpleSynth");
+        log::creating("SimpleSynth");
         Self{
             sample_rate: *sample_rate as f32,
             counter: 0_f32,
@@ -34,7 +34,7 @@ impl SimpleSynth {
 impl Drop for SimpleSynth {
     fn drop(&mut self) {
         self.reset();
-        log::on_drop("SimpleSynth");
+        log::droping("SimpleSynth");
     }
 }
 
@@ -60,7 +60,7 @@ impl AudioRender for SimpleSynth {
 //  //  //  //  //  //  //  //
 impl MidiReceiver for SimpleSynth {
     fn reset(&mut self) {
-        log::info("SimpleSynth", "reset");
+        log::info("SimpleSynth: reset");
     }
     fn process_midi_command(&mut self, 
                             channel: i32, command: i32, 
@@ -69,7 +69,7 @@ impl MidiReceiver for SimpleSynth {
         match command {
             0x80 => self.note_off(channel, data1),       // Note Off
             0x90 => self.note_on(channel, data1, data2), // Note On
-            _ => log::info("SimpleSynth", "W: unknown midi command")
+            _ => log::info("SimpleSynth: W| unknown midi command")
         }
     }
 }
@@ -79,12 +79,12 @@ impl MidiReceiver for SimpleSynth {
 //  //  //  //  //  //  //  //
 impl SimpleSynth {
     pub fn note_on(&mut self, _channel: i32, key: i32, velocity: i32) {
-        log::info("SimpleSynth", "note ON");
+        log::info("SimpleSynth: note ON");
         self.amplitude = 0.999*SimpleSynth::amplitudeFrom( velocity );
         self.frequency = SimpleSynth::frequencyFrom( key );
     }
     pub fn note_off(&mut self, _channel: i32, _key: i32) {
-        log::info("SimpleSynth", "note OFF");
+        log::info("SimpleSynth: note OFF");
         self.amplitude = 0_f32;
         self.counter = 0_f32;
     }

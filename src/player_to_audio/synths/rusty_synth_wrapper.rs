@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use rustysynth::*;
 
-use crate::raadbg::log;
+use raalog::*;
 
 use super::super::audio_core::AudioRender;
 
@@ -28,11 +28,11 @@ impl RustySynthWrapper {
         match new_synth {
             Err(e) => {
                 let errmsg = err_to_string( &e );
-                log::error("RustySynthWrapper", &errmsg);
+                log::error( &format!("RustySynthWrapper: {errmsg}") );
                 Err(e)
                 },
             Ok(loaded_synth) => {
-                log::create("RustySynthWrapper");
+                log::creating("RustySynthWrapper");
                 Ok(
                     Self{
                         synth: loaded_synth
@@ -45,7 +45,7 @@ impl RustySynthWrapper {
 impl Drop for RustySynthWrapper {
     fn drop(&mut self) {
         self.reset();
-        log::on_drop("RustySynthWrapper");
+        log::droping("RustySynthWrapper");
     }
 }
 
@@ -67,7 +67,7 @@ impl AudioRender for RustySynthWrapper {
 
 impl MidiReceiver for RustySynthWrapper {
     fn reset(&mut self) {
-        log::info("RustySynthWrapper", "reset");
+        log::info("RustySynthWrapper: reset");
         self.synth.reset();
     }
     fn process_midi_command(&mut self, 

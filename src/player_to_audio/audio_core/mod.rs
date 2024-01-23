@@ -4,7 +4,7 @@ use std::sync::{Arc,Mutex};
 use tinyaudio::OutputDeviceParameters;
 use tinyaudio::prelude::{BaseAudioOutputDevice,run_output_device};
 
-use crate::raadbg::log;
+use raalog::*;
 
 //  //  //  //  //  //  //  //
 mod render_holder;
@@ -24,7 +24,7 @@ pub struct AudioCore {
 
 impl AudioCore {
     pub fn new( ) -> Self {
-        log::create("AudioCore");
+        log::creating("AudioCore");
         Self{ 
             params: Default::default(),
             device: None,
@@ -37,7 +37,7 @@ impl Drop for AudioCore {
         if self.is_active() {
             self.stop();
         }
-        log::on_drop("AudioCore");
+        log::droping("AudioCore");
     }
 }
 
@@ -48,15 +48,15 @@ impl AudioCore {
     pub fn start(&mut self) -> Result< (), Box<dyn Error> > {
         if self.is_active() {
             self.stop();
-            log::info("AudioCore", "restarting");
+            log::info("AudioCore: restarting");
         }else{
-            log::info("AudioCore", "starting");
+            log::info("AudioCore: starting");
         }
         self.activate_device_loop()
     }
     pub fn stop(&mut self) {
         self.device = None;
-        log::info("AudioCore", "stop");
+        log::info("AudioCore: stop");
     }
     pub fn is_active(&self) -> bool {
         match self.device {
@@ -104,7 +104,7 @@ impl AudioCore {
         match device {
             Err(e) => {
                 let errmsg = format!("{:?}",e);
-                log::error("AudioCore", &errmsg);
+                log::error( &format!("AudioCore: {errmsg}") );
                 return Err(e)
             },
             Ok(running_device) => self.device = Some(running_device),
