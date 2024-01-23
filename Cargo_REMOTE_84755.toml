@@ -1,8 +1,8 @@
 [package]
 name = "domik"
-version = "0.2.0"
+version = "0.1.0"
+license = "MIT"
 edition = "2021"
-
 
 [dependencies]
 #raalog = { path="../../develop/raalog/" }
@@ -25,3 +25,4 @@ rustysynth = "1.2.0"
 console_error_panic_hook = "0.1.6"
 tracing-wasm = "0.2"
 wasm-bindgen-futures = "0.4"
+

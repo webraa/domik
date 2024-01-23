@@ -1,6 +1,6 @@
 use std::sync::{Arc,Mutex};
 
-use crate::raadbg::log;
+use raalog::*;
 
 
 pub trait AudioRender: Sync + Send {
@@ -20,7 +20,7 @@ impl RenderHolder {
         Arc::new(Mutex::new( Self::new() ))
     }
     pub fn new() -> Self {
-        log::create("RenderHolder");
+        log::creating("RenderHolder");
         Self{ 
             audio_render: None
         }
@@ -28,7 +28,7 @@ impl RenderHolder {
 }
 impl Drop for RenderHolder {
     fn drop(&mut self) {
-        log::on_drop("RenderHolder");
+        log::droping("RenderHolder");
     }
 }
 

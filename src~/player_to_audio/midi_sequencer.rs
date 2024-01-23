@@ -1,7 +1,7 @@
 //use std::error::Error;
 use std::sync::{Arc,Mutex};
 
-use crate::raadbg::log;
+use raalog::*;
 
 use super::audio_core::AudioRender;
 
@@ -21,7 +21,7 @@ pub struct MidiSequencer{
 
 impl MidiSequencer {
     pub fn new( time_increment: f32 ) -> Self {
-        log::create("MidiSequencer");
+        log::creating("MidiSequencer");
         Self{
             time_increment: time_increment,
             sequence: MidiSequence::new(),
@@ -32,7 +32,7 @@ impl MidiSequencer {
 }
 impl Drop for MidiSequencer {
     fn drop(&mut self) {
-        log::on_drop("MidiSequencer");
+        log::droping("MidiSequencer");
     }
 }
 

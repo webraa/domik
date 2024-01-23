@@ -1,7 +1,16 @@
 #![allow(non_snake_case)]
+<<<<<<< HEAD
   
 use crate::log;
 use crate::sound_check::make_sound;
+=======
+
+use crate::log_view::LogView;
+use raalog::*;
+use crate::base_domik_view::BaseDomikView;
+
+use crate::test_view::TestView;
+>>>>>>> dev
 
 
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -20,7 +29,11 @@ impl Default for RootApp {
 impl RootApp {
     pub fn new(cc: &eframe::CreationContext) -> Self {
         if let Some(storage) = cc.storage{
+<<<<<<< HEAD
             log("trying to load..");
+=======
+            log::info("trying to load..");
+>>>>>>> dev
             return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
         }
         Default::default()
@@ -30,9 +43,15 @@ impl RootApp {
 
 impl eframe::App for RootApp {
     fn save(&mut self, storage: &mut dyn eframe::Storage) {
+<<<<<<< HEAD
         log("saving..");
         eframe::set_value(storage, eframe::APP_KEY, self);
         log("..saved");
+=======
+        log::info("saving..");
+        eframe::set_value(storage, eframe::APP_KEY, self);
+        log::info("..saved");
+>>>>>>> dev
     }
 
     fn update( &mut self, ctx: &egui::Context, _frame: &mut eframe::Frame ) {

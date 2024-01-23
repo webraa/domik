@@ -1,6 +1,6 @@
 use tinyaudio::prelude::OutputDeviceParameters;
 
-use crate::raadbg::log;
+use raalog::*;
 
 //  //  //  //  //  //  //  //
 //      CORE
@@ -39,7 +39,7 @@ impl AudioCoreParameters {
     }
     pub fn get_tick_time(&self) -> f32 {
         let res = 2. * (self.block_size as f32) / (self.sample_rate as f32);
-        log::simple( format!("tick time = {res}").as_str() );
+        log::info( &format!("tick time = {res}") );
         return res;
     }
 }

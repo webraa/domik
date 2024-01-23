@@ -5,12 +5,24 @@ mod sound_check;
 mod root_app;
 use root_app::RootApp;
 
+<<<<<<< HEAD
 mod console_log;
 use console_log::*;
 
 #[ cfg(not(target_arch = "wasm32")) ]
 fn main() -> Result<(), eframe::Error> {
     log("MAIN has beed entered..");
+=======
+mod domik_ui_elements;
+mod base_domik_view;
+mod test_view;
+
+use raalog::*;
+
+#[ cfg(not(target_arch = "wasm32")) ]
+fn main() -> Result<(), eframe::Error> {
+    log::info("MAIN has beed entered..");
+>>>>>>> dev
 
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
@@ -31,7 +43,11 @@ fn main() -> Result<(), eframe::Error> {
 
 #[ cfg(target_arch = "wasm32") ]
 fn main() {
+<<<<<<< HEAD
     log("[WASM]: MAIN has beed entered..");
+=======
+    log::info("MAIN has beed entered..");
+>>>>>>> dev
 
     console_error_panic_hook::set_once();
 
