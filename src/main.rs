@@ -45,7 +45,7 @@ fn main() {
     wasm_bindgen_futures::spawn_local(async {
         eframe::WebRunner::new()
             .start(
-                "raa_canvas_id",
+                "egui_canvas_id",
                 options,
                 Box::new( |cc| Box::new(RootApp::new(cc)) ),
             )
