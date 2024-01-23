@@ -22,11 +22,18 @@ jobs:
         override: true
     - name: Rust Cache # cache the rust build artefacts
       uses: Swatinem/rust-cache@v1
+        
+    - name: Tests
+      run : echo 'leads to panic' #make test
+    - name: try to Build Native
+      run : echo 'leads to panic' #make release
+
     - name: Build
       run : |
         make configure
         make test
         make bindgen.wasm
+
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4
       with:
