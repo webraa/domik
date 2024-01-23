@@ -24,8 +24,8 @@ jobs:
       uses: Swatinem/rust-cache@v1
     - name: Build
       run : |
-        make configure
         make test
+        make configure
         make bindgen.wasm
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@v4
