@@ -143,7 +143,7 @@ fn invoke_runOutputDevice( params: OutputDeviceParameters,
 //  //  //  //  //  //  //  //
 //          TESTS
 //  //  //  //  //  //  //  //
-/*
+#[ cfg(not(target_arch = "wasm32")) ]
 #[cfg(test)]
 mod test {
     use super::*;
@@ -168,4 +168,4 @@ mod test {
         assert!(!audio.is_active());
     }
 }
-*/
+
