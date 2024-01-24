@@ -3,6 +3,7 @@
 use egui::Color32;
 
 use audio_server::AudioServer;
+use raalog::log;
 
 use crate::player_to_audio::{PlayerToAudio,PlayerState};
 
@@ -62,21 +63,6 @@ impl TestView {
                     clr = Color32::GRAY;
                 },
             };
-/*            match self.player.get_state() {
-                PlayerState::Inactive => {
-                    btn_txt = "[-]";
-                    clr = Color32::DARK_BLUE;
-                },
-                PlayerState::Running => {
-                    btn_txt = "[+]";
-                    clr = Color32::DARK_GREEN;
-                },
-                PlayerState::Realtime => {
-                    btn_txt = "[#]";
-                    clr = Color32::GREEN;
-                },
-            };
-*/
             ui.style_mut().visuals.widgets.inactive.weak_bg_fill = clr;
             ui.style_mut().visuals.widgets.hovered.weak_bg_fill = clr;
             let btn = ui.button(btn_txt);
@@ -86,11 +72,6 @@ impl TestView {
                 }else{
                     self.audio.exec("stop");
                 }
-//                if let PlayerState::Inactive = self.player.get_state() {
-//                    self.player.execute_command( "start", "" );
-//                }else{
-//                    self.player.execute_command( "stop", "" );
-//                }
             }
         });
         ui.separator();
@@ -99,24 +80,38 @@ impl TestView {
         ui.horizontal( |ui| {
                 let btnN = ui.button( "None" );
                 if btnN.clicked(){
-                    self.player.execute_command( "SetupSource", "" );
+                    let setup = "reset";
+                    if let Err(e) = self.audio.config(setup) {
+                        log::error(&e.to_string());
+                    }
                 }
-                    
                 let btnS = ui.button( "SimpleSynth" );
                 if btnS.clicked(){
-                    self.player.execute_command( "SetupSource", "SimpleSynth" );
+                    let setup = "SimpleSynth";
+                    if let Err(e) = self.audio.config(setup) {
+                        log::error(&e.to_string());
+                    }
                 }
                 let btnRA = ui.button( "RustySynt - Strings" );
                 if btnRA.clicked(){
-                    self.player.execute_command( "SetupSource", "RustySynt - Strings" );
+                    let setup = "RustySynt - Strings";
+                    if let Err(e) = self.audio.config(setup) {
+                        log::error(&e.to_string());
+                    }
                 }
                 let btnRB = ui.button( "RustySynt - Piano" );
                 if btnRB.clicked(){
-                    self.player.execute_command( "SetupSource", "RustySynt - Piano" );
+                    let setup = "RustySynt - Piano";
+                    if let Err(e) = self.audio.config(setup) {
+                        log::error(&e.to_string());
+                    }
                 }
                 let btnRA = ui.button( "Sequencer:RustySynt - Strings" );
                 if btnRA.clicked(){
-                    self.player.execute_command( "SetupSource", "Sequencer:RustySynt - Strings" );
+                    let setup = "Sequencer:RustySynt - Strings";
+                    if let Err(e) = self.audio.config(setup) {
+                        log::error(&e.to_string());
+                    }
                 }
             });
         ui.separator();
