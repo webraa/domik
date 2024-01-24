@@ -2,6 +2,8 @@
 
 use egui::Color32;
 
+use audio_server::AudioServer;
+
 use crate::player_to_audio::{PlayerToAudio,PlayerState};
 
 use crate::player_to_audio::{MidiMessage,MidiSequence};
@@ -13,6 +15,7 @@ pub struct TestView {
     needsRepaint: bool,
     pub title: String,
     player: PlayerToAudio,
+    audio: AudioServer,
 }
 impl Default for TestView {
     fn default() -> Self {
@@ -25,12 +28,14 @@ impl TestView {
             needsRepaint: false,
             title: "testing view".to_owned(),
             player: PlayerToAudio::new(),
+            audio: AudioServer::new(),
         }
     }
     pub fn updateUI(&mut self, ui: &mut egui::Ui) {
         let b = ui.button("rrr");
             if b.clicked() {
                 self.player = PlayerToAudio::new();
+                self.audio = AudioServer::new();
             }
         ui.separator();
         if let PlayerState::Realtime = self.player.get_state() {
@@ -39,7 +44,25 @@ impl TestView {
         ui.scope(|ui|{
             let btn_txt;
             let clr;
-            match self.player.get_state() {
+            match self.audio.state() {
+                "inactive" => {
+                    btn_txt = "[-]";
+                    clr = Color32::DARK_BLUE;
+                },
+                "running" => {
+                    btn_txt = "[+]";
+                    clr = Color32::DARK_GREEN;
+                },
+                "REALTIME" => {
+                    btn_txt = "[#]";
+                    clr = Color32::GREEN;
+                },
+                _ => {
+                    btn_txt = "[?]";
+                    clr = Color32::GRAY;
+                },
+            };
+/*            match self.player.get_state() {
                 PlayerState::Inactive => {
                     btn_txt = "[-]";
                     clr = Color32::DARK_BLUE;
@@ -53,15 +76,21 @@ impl TestView {
                     clr = Color32::GREEN;
                 },
             };
+*/
             ui.style_mut().visuals.widgets.inactive.weak_bg_fill = clr;
             ui.style_mut().visuals.widgets.hovered.weak_bg_fill = clr;
             let btn = ui.button(btn_txt);
             if btn.clicked() {
-                if let PlayerState::Inactive = self.player.get_state() {
-                    self.player.execute_command( "start", "" );
+                if self.audio.state() == "inactive" {
+                    self.audio.exec("start");
                 }else{
-                    self.player.execute_command( "stop", "" );
+                    self.audio.exec("stop");
                 }
+//                if let PlayerState::Inactive = self.player.get_state() {
+//                    self.player.execute_command( "start", "" );
+//                }else{
+//                    self.player.execute_command( "stop", "" );
+//                }
             }
         });
         ui.separator();

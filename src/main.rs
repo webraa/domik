@@ -1,5 +1,7 @@
 #![allow(non_snake_case)]
 
+use raalog::log;
+
 mod log_view;
 mod root_app;
 
@@ -10,8 +12,6 @@ use root_app::RootApp;
 mod domik_ui_elements;
 mod base_domik_view;
 mod test_view;
-
-use raalog::*;
 
 #[ cfg(not(target_arch = "wasm32")) ]
 fn main() -> Result<(), eframe::Error> {

@@ -1,4 +1,4 @@
-use raalog::*;
+use raalog::log;
 
 use super::super::audio_core::AudioRender;
 use super::super::midi_lib::MidiReceiver;

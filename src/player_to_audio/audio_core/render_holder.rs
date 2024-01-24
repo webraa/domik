@@ -1,6 +1,6 @@
 use std::sync::{Arc,Mutex};
 
-use raalog::*;
+use raalog::log;
 
 
 pub trait AudioRender: Sync + Send {

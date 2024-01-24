@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
-use raalog::*;
+use raalog::log;
+
 use crate::log_view::LogView;
 use crate::base_domik_view::BaseDomikView;
 

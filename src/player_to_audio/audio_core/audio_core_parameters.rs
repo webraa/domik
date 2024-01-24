@@ -1,6 +1,6 @@
 use tinyaudio::prelude::OutputDeviceParameters;
 
-use raalog::*;
+use raalog::log;
 
 //  //  //  //  //  //  //  //
 //      CORE

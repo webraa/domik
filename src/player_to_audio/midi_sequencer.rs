@@ -1,7 +1,7 @@
 //use std::error::Error;
 use std::sync::{Arc,Mutex};
 
-use raalog::*;
+use raalog::log;
 
 use super::audio_core::AudioRender;
 

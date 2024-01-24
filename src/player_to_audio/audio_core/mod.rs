@@ -4,7 +4,7 @@ use std::sync::{Arc,Mutex};
 use tinyaudio::OutputDeviceParameters;
 use tinyaudio::prelude::{BaseAudioOutputDevice,run_output_device};
 
-use raalog::*;
+use raalog::log;
 
 //  //  //  //  //  //  //  //
 mod render_holder;

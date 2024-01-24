@@ -1,6 +1,6 @@
 //use std::sync::{Arc,Mutex};
 
-use raalog::*;
+use raalog::log;
 
 mod audio_core;
 use audio_core::{AudioCore};
@@ -21,16 +21,16 @@ pub enum PlayerState {
     Realtime,
 }
 impl PlayerState {
-    pub fn as_string(&self) -> String {
+    pub fn as_string(&self) -> &'static str{
         match &self {
             Inactive => {
-                "inactive".to_string()
+                "inactive"
             },
             Running => {
-                "Running".to_string()
+                "Running"
             },
             Realtime => {
-                "REALTIME".to_string()
+                "REALTIME"
             },
         }
     }

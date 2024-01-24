@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use rustysynth::*;
 
-use raalog::*;
+use raalog::log;
 
 use super::super::audio_core::AudioRender;
 
