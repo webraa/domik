@@ -24,6 +24,8 @@ release.wasm:
 	@cargo build --release --target wasm32-unknown-unknown
 test:
 	@cargo test
+check:
+	@cargo rustc -- -Awarnings
 
 configure:
 	@cargo install -f wasm-bindgen-cli

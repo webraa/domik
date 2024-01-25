@@ -23,6 +23,8 @@ jobs:
     - name: Rust Cache # cache the rust build artefacts
       uses: Swatinem/rust-cache@v1
         
+    - name: Compile check
+      run : make check
     - name: Tests
       run : echo 'leads to panic' #make test
     - name: try to Build Native
