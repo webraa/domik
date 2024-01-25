@@ -1,45 +1,43 @@
-
-
 use egui::Color32;
 
 use audio_server::AudioServer;
 use raalog::log;
 
-use crate::player_to_audio::{PlayerToAudio,PlayerState};
 
-use crate::player_to_audio::{MidiMessage,MidiSequence};
-
-
-
-
+//  //  //  //  //  //  //  //
+//      CORE
+//  //  //  //  //  //  //  //
 pub struct TestView {
     needsRepaint: bool,
     pub title: String,
-    player: PlayerToAudio,
     audio: AudioServer,
-}
-impl Default for TestView {
-    fn default() -> Self {
-        Self::new()
-    }
 }
 impl TestView {
     pub fn new() -> Self {
         Self{
             needsRepaint: false,
             title: "testing view".to_owned(),
-            player: PlayerToAudio::new(),
             audio: AudioServer::new(),
         }
     }
+}
+impl Default for TestView {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+//  //  //  //  //  //  //  //
+//      impl
+//  //  //  //  //  //  //  //
+impl TestView {
     pub fn updateUI(&mut self, ui: &mut egui::Ui) {
         let b = ui.button("rrr");
             if b.clicked() {
-                self.player = PlayerToAudio::new();
                 self.audio = AudioServer::new();
             }
         ui.separator();
-        if let PlayerState::Realtime = self.player.get_state() {
+        if self.audio.state() == "REALTIME" {
             self.needsRepaint = true;
         }
         ui.scope(|ui|{
@@ -48,15 +46,15 @@ impl TestView {
             match self.audio.state() {
                 "inactive" => {
                     btn_txt = "[-]";
-                    clr = Color32::DARK_BLUE;
+                    clr = Color32::BROWN;
                 },
                 "running" => {
                     btn_txt = "[+]";
-                    clr = Color32::DARK_GREEN;
+                    clr = Color32::GREEN;
                 },
                 "REALTIME" => {
                     btn_txt = "[#]";
-                    clr = Color32::GREEN;
+                    clr = Color32::YELLOW;
                 },
                 _ => {
                     btn_txt = "[?]";
@@ -68,9 +66,9 @@ impl TestView {
             let btn = ui.button(btn_txt);
             if btn.clicked() {
                 if self.audio.state() == "inactive" {
-                    self.audio.exec("start");
+                    let _ = self.audio.exec("start");
                 }else{
-                    self.audio.exec("stop");
+                    let _ = self.audio.exec("stop");
                 }
             }
         });
@@ -80,38 +78,23 @@ impl TestView {
         ui.horizontal( |ui| {
                 let btnN = ui.button( "None" );
                 if btnN.clicked(){
-                    let setup = "reset";
-                    if let Err(e) = self.audio.config(setup) {
-                        log::error(&e.to_string());
-                    }
+                    self.applySetup( "None" );
                 }
                 let btnS = ui.button( "SimpleSynth" );
                 if btnS.clicked(){
-                    let setup = "SimpleSynth";
-                    if let Err(e) = self.audio.config(setup) {
-                        log::error(&e.to_string());
-                    }
+                    self.applySetup( "SimpleSynth" );
                 }
                 let btnRA = ui.button( "RustySynt - Strings" );
                 if btnRA.clicked(){
-                    let setup = "RustySynt - Strings";
-                    if let Err(e) = self.audio.config(setup) {
-                        log::error(&e.to_string());
-                    }
+                    self.applySetup( "RustySynt - Strings" );
                 }
                 let btnRB = ui.button( "RustySynt - Piano" );
                 if btnRB.clicked(){
-                    let setup = "RustySynt - Piano";
-                    if let Err(e) = self.audio.config(setup) {
-                        log::error(&e.to_string());
-                    }
+                    self.applySetup( "RustySynt - Piano" );
                 }
                 let btnRA = ui.button( "Sequencer:RustySynt - Strings" );
                 if btnRA.clicked(){
-                    let setup = "Sequencer:RustySynt - Strings";
-                    if let Err(e) = self.audio.config(setup) {
-                        log::error(&e.to_string());
-                    }
+                    self.applySetup( "Sequencer:RustySynt - Strings" );
                 }
             });
         ui.separator();
@@ -120,51 +103,32 @@ impl TestView {
         ui.horizontal( |ui| {
             let btnO = ui.button( "[-]" );
             if btnO.clicked(){
-                let mut seq = MidiSequence::new();
-                seq.push( 0.0, &MidiMessage::NoteOn( 1,90,80) );
-                seq.push( 0.5, &MidiMessage::NoteOff(1,90,80) );
-                seq.push( 0., &MidiMessage::NoteOn( 1,91,80) );
-                seq.push( 0.5, &MidiMessage::NoteOff(1,91,80) );
-                seq.push( 0., &MidiMessage::NoteOn( 1,92,80) );
-                seq.push( 0.5, &MidiMessage::NoteOff(1,92,80) );
-                seq.push( 0., &MidiMessage::NoteOn( 1,91,80) );
-                seq.push( 0.5, &MidiMessage::NoteOff(1,91,80) );
-                seq.push( 1., &MidiMessage::NoteOff(1,92,80) );
-                self.player.set_sequence(seq, false);
+                let _ = self.audio.exec( "seq 1");
             }
             let btnO1 = ui.button( "[+]" );
             if btnO1.clicked(){
-                let mut seq = MidiSequence::new();
-                seq.push( 0.0, &MidiMessage::NoteOn( 1,90,80) );
-                seq.push( 0.5, &MidiMessage::NoteOff(1,90,80) );
-                seq.push( 0., &MidiMessage::NoteOn( 1,91,80) );
-                seq.push( 0.5, &MidiMessage::NoteOff(1,91,80) );
-                seq.push( 0., &MidiMessage::NoteOn( 1,92,80) );
-                seq.push( 0.5, &MidiMessage::NoteOff(1,92,80) );
-                seq.push( 0., &MidiMessage::NoteOn( 1,91,80) );
-                seq.push( 0.5, &MidiMessage::NoteOff(1,91,80) );
-                self.player.set_sequence(seq, true);
+                let _ = self.audio.exec( "seq auto");
             }
             ui.separator();
-            let btnA = ui.button( "note ON" );
+            let mut test_txt = "note ON";
+            let btnA = ui.button( test_txt );
             if btnA.clicked(){
-                let midi = MidiMessage::NoteOn(1,60,127);
-                self.player.send_midi_message( & midi );
+                let _ = self.audio.exec( test_txt );
             }
-            let btnA1 = ui.button( "note ON2" );
+                    test_txt = "note ON2";
+            let btnA1 = ui.button( test_txt );
             if btnA1.clicked(){
-                let midi = MidiMessage::NoteOn(1,67,64);
-                self.player.send_midi_message( & midi );
+                let _ = self.audio.exec( test_txt );
             }
-            let btnA2 = ui.button( "note ON2" );
+                    test_txt = "note ON3";
+            let btnA2 = ui.button( test_txt );
             if btnA2.clicked(){
-                let midi = MidiMessage::NoteOn(1,72,1);
-                self.player.send_midi_message( & midi );
+                let _ = self.audio.exec( test_txt );
             }
-            let btnB = ui.button( "note OFF" );
+                    test_txt = "note OFF";
+            let btnB = ui.button( test_txt );
             if btnB.clicked(){
-                let midi = MidiMessage::NoteOff(1,60,100);
-                self.player.send_midi_message( & midi );
+                let _ = self.audio.exec( test_txt );
             }
         });
 
@@ -173,7 +137,11 @@ impl TestView {
             ui.ctx().request_repaint();
         }
     }
+
+    fn applySetup(&mut self, setup: &str) {
+        if let Err(e) = self.audio.config(setup) {
+            log::error(&e.to_string());
+        }
+    }
 }
-
-
 

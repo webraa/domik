@@ -5,8 +5,6 @@ use raalog::log;
 mod log_view;
 mod root_app;
 
-mod player_to_audio;
-
 use root_app::RootApp;
 
 mod domik_ui_elements;
