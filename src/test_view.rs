@@ -4,6 +4,11 @@ use audio_server::AudioServer;
 use raalog::log;
 
 
+static SF_PIANO:   &'static [u8] = include_bytes!("../SoundFonts/Piano Grand.SF2");
+static SF_STRINGS: &'static [u8] = include_bytes!("../SoundFonts/String Marcato.SF2");
+//static SF_ORGAN:   &'static [u8] = include_bytes!("../../SoundFonts/Organ Chorus.SF2");
+
+
 //  //  //  //  //  //  //  //
 //      CORE
 //  //  //  //  //  //  //  //
@@ -78,23 +83,23 @@ impl TestView {
         ui.horizontal( |ui| {
                 let btnN = ui.button( "None" );
                 if btnN.clicked(){
-                    self.applySetup( "None" );
+                    self.applySetup( "None", None );
                 }
                 let btnS = ui.button( "SimpleSynth" );
                 if btnS.clicked(){
-                    self.applySetup( "SimpleSynth" );
+                    self.applySetup( "SimpleSynth", None );
                 }
                 let btnRA = ui.button( "RustySynt - Strings" );
                 if btnRA.clicked(){
-                    self.applySetup( "RustySynt - Strings" );
+                    self.applySetup( "RustySynt", Some(SF_STRINGS) );
                 }
                 let btnRB = ui.button( "RustySynt - Piano" );
                 if btnRB.clicked(){
-                    self.applySetup( "RustySynt - Piano" );
+                    self.applySetup( "RustySynt", Some(SF_PIANO) );
                 }
                 let btnRA = ui.button( "Sequencer:RustySynt - Strings" );
                 if btnRA.clicked(){
-                    self.applySetup( "Sequencer:RustySynt - Strings" );
+                    self.applySetup( "Sequencer:RustySynt", Some(SF_STRINGS) );
                 }
             });
         ui.separator();
@@ -138,8 +143,8 @@ impl TestView {
         }
     }
 
-    fn applySetup(&mut self, setup: &str) {
-        if let Err(e) = self.audio.config(setup) {
+    fn applySetup(&mut self, setup: &str, data: Option<&[u8]> ) {
+        if let Err(e) = self.audio.config(setup, data ) {
             log::error(&e.to_string());
         }
     }
