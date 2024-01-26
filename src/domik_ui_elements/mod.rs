@@ -26,7 +26,7 @@ fn dom_lvl_responder( ui: &mut egui::Ui, lvl: i8 ) -> egui::Response {
     if ui.is_rect_visible(rect) {
         let visuals = ui.style().interact_selectable(&response, true );
         let rect = rect.expand(visuals.expansion);
-        let radius = 0.1 * rect.height();
+        let _radius = 0.1 * rect.height();
         let points: Vec<egui::Pos2> = match de_oct_lvl {
             -3 | -1 | 2 | 4 | 6 => {
                 vec![

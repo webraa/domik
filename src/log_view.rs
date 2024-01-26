@@ -1,4 +1,4 @@
-use raalog::*;
+use raalog::log;
 
 pub struct LogView {
 }
